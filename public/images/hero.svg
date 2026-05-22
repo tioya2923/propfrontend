@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="700" viewBox="0 0 1400 700">
+  <defs>
+    <linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0f1e"/>
+      <stop offset="55%" style="stop-color:#1a2540"/>
+      <stop offset="100%" style="stop-color:#2d3a55"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="35%" r="45%">
+      <stop offset="0%" style="stop-color:#7f1010;stop-opacity:0.35"/>
+      <stop offset="100%" style="stop-color:#0a0f1e;stop-opacity:0"/>
+    </radialGradient>
+    <pattern id="stars" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
+      <circle cx="20" cy="30" r="1.1" fill="rgba(255,255,255,0.55)"/>
+      <circle cx="80" cy="10" r="0.7" fill="rgba(255,255,255,0.4)"/>
+      <circle cx="140" cy="55" r="0.9" fill="rgba(255,255,255,0.5)"/>
+      <circle cx="60" cy="110" r="0.8" fill="rgba(255,255,255,0.3)"/>
+      <circle cx="175" cy="140" r="1" fill="rgba(255,255,255,0.45)"/>
+      <circle cx="110" cy="85" r="0.6" fill="rgba(255,255,255,0.35)"/>
+      <circle cx="40" cy="170" r="0.9" fill="rgba(255,255,255,0.3)"/>
+      <circle cx="190" cy="90" r="0.7" fill="rgba(255,255,255,0.45)"/>
+    </pattern>
+  </defs>
+  <rect width="1400" height="700" fill="url(#sky)"/>
+  <rect width="1400" height="700" fill="url(#glow)"/>
+  <rect width="1400" height="700" fill="url(#stars)" opacity="0.7"/>
+
+  <!-- Seminary building silhouette -->
+  <g opacity="0.20" fill="#ffffff">
+    <!-- main body -->
+    <rect x="380" y="400" width="640" height="300" rx="0"/>
+    <!-- central tower -->
+    <rect x="660" y="240" width="180" height="180" rx="0"/>
+    <rect x="645" y="228" width="210" height="18" rx="2"/>
+    <!-- tower peak -->
+    <polygon points="660,228 750,140 840,228"/>
+    <!-- cross on peak -->
+    <rect x="744" y="112" width="14" height="42" rx="2"/>
+    <rect x="732" y="128" width="38" height="12" rx="2"/>
+    <!-- left wing -->
+    <rect x="220" y="460" width="180" height="240" rx="0"/>
+    <polygon points="220,460 310,380 400,460"/>
+    <!-- right wing -->
+    <rect x="1000" y="460" width="180" height="240" rx="0"/>
+    <polygon points="1000,460 1090,380 1180,460"/>
+    <!-- arched windows main -->
+    <rect x="430" y="450" width="55" height="80" rx="27 27 0 0"/>
+    <rect x="530" y="450" width="55" height="80" rx="27 27 0 0"/>
+    <rect x="820" y="450" width="55" height="80" rx="27 27 0 0"/>
+    <rect x="920" y="450" width="55" height="80" rx="27 27 0 0"/>
+    <!-- tower windows -->
+    <rect x="685" y="265" width="50" height="70" rx="25 25 0 0"/>
+    <rect x="765" y="265" width="50" height="70" rx="25 25 0 0"/>
+    <!-- central door -->
+    <rect x="695" y="540" width="110" height="160" rx="55 55 0 0"/>
+  </g>
+
+  <!-- ground -->
+  <rect x="0" y="660" width="1400" height="40" fill="rgba(0,0,0,0.25)"/>
+  <!-- subtle red glow at cross base -->
+  <ellipse cx="750" cy="140" rx="50" ry="15" fill="#991010" opacity="0.12"/>
+</svg>
