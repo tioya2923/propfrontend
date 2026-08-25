@@ -108,6 +108,7 @@ export default function AdminSeminaristas() {
       nome: u.nome, email: u.email, password: '',
       cargo: cargoEfetivo(u),
       ano_formacao: u.ano_formacao || 1,
+      ativo: u.ativo,
     });
     setEditModal({ user: u });
   }

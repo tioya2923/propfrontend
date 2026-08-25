@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useApi } from '../../hooks/useApi';
 import { adminAPI } from '../../api';
-import { formatCurrency, formatDateTime } from '../../utils/format';
+import { formatCurrency, formatDateTime, PAGAMENTO_METODO_LABEL } from '../../utils/format';
 
 export default function AdminPagamentos() {
   const [page, setPage] = useState(1);
@@ -29,7 +29,7 @@ export default function AdminPagamentos() {
                     <td className="px-4 py-3 text-gray-500">{formatDateTime(p.data_pagamento)}</td>
                     <td className="px-4 py-3 font-medium">{p.user?.nome || '—'}</td>
                     <td className="px-4 py-3"><span className="font-semibold text-wine-700">{formatCurrency(p.valor, p.moeda)}</span></td>
-                    <td className="px-4 py-3 capitalize"><span className="badge bg-blue-100 text-blue-700">{p.metodo}</span></td>
+                    <td className="px-4 py-3"><span className="badge bg-blue-100 text-blue-700">{PAGAMENTO_METODO_LABEL[p.metodo] || p.metodo}</span></td>
                     <td className="px-4 py-3">{p.periodo_referencia || '—'}</td>
                     <td className="px-4 py-3 text-gray-400 text-xs font-mono">{p.referencia_transacao?.slice(0, 12)}...</td>
                   </tr>

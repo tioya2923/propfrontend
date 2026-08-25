@@ -22,7 +22,7 @@ export default function Comunicados() {
                 <div className="flex-1">
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <h2 className="font-semibold text-gray-900">{c.titulo}</h2>
-                    <span className="text-xs text-gray-400 shrink-0">{formatDateTime(c.created_at)}</span>
+                    <span className="text-xs text-gray-400 shrink-0">{formatDateTime(c.createdAt)}</span>
                   </div>
                   <p className="text-sm text-gray-600 leading-relaxed">{c.conteudo}</p>
                   {c.autor && <p className="text-xs text-gray-400 mt-3">— {c.autor.nome}</p>}

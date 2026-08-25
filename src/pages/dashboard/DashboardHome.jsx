@@ -89,7 +89,7 @@ export default function DashboardHome() {
                 <Bell size={16} className="text-yellow-500 mt-0.5 shrink-0" />
                 <div>
                   <p className="text-sm font-medium text-gray-900">{c.titulo}</p>
-                  <p className="text-xs text-gray-500">{formatDate(c.created_at)}</p>
+                  <p className="text-xs text-gray-500">{formatDate(c.createdAt)}</p>
                 </div>
               </div>
             ))}

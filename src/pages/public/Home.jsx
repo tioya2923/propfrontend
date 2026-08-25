@@ -13,29 +13,42 @@ const DEFAULTS = {
 
 /* ── Social sidebar ────────────────────────────────────────────────────────── */
 function SocialSidebar() {
+  const c = useConteudo('contactos', {});
+  if (!c.facebook_url && !c.twitter_url && !c.instagram_url) return null;
   return (
     <div className="fixed left-0 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col">
-      <a href="https://facebook.com" target="_blank" rel="noopener noreferrer"
-        className="flex items-center justify-center w-9 h-9 bg-[#3b5998] text-white hover:bg-[#2d4373] transition-colors"
-        aria-label="Facebook"><Facebook size={15} /></a>
-      <a href="https://twitter.com" target="_blank" rel="noopener noreferrer"
-        className="flex items-center justify-center w-9 h-9 bg-[#1da1f2] text-white hover:bg-[#1a8fd1] transition-colors"
-        aria-label="Twitter"><Twitter size={15} /></a>
-      <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"
-        className="flex items-center justify-center w-9 h-9 bg-[#c13584] text-white hover:bg-[#a0286c] transition-colors"
-        aria-label="Instagram"><Instagram size={15} /></a>
+      {c.facebook_url && (
+        <a href={c.facebook_url} target="_blank" rel="noopener noreferrer"
+          className="flex items-center justify-center w-9 h-9 bg-[#3b5998] text-white hover:bg-[#2d4373] transition-colors"
+          aria-label="Facebook"><Facebook size={15} /></a>
+      )}
+      {c.twitter_url && (
+        <a href={c.twitter_url} target="_blank" rel="noopener noreferrer"
+          className="flex items-center justify-center w-9 h-9 bg-[#1da1f2] text-white hover:bg-[#1a8fd1] transition-colors"
+          aria-label="Twitter"><Twitter size={15} /></a>
+      )}
+      {c.instagram_url && (
+        <a href={c.instagram_url} target="_blank" rel="noopener noreferrer"
+          className="flex items-center justify-center w-9 h-9 bg-[#c13584] text-white hover:bg-[#a0286c] transition-colors"
+          aria-label="Instagram"><Instagram size={15} /></a>
+      )}
     </div>
   );
 }
 
-/* ── Hero Slider ───────────────────────────────────────────────────────────── */
-function HeroSlider({ subtitulo, titulo, imagens }) {
+/* ── Hero Slider — mostra as notícias em destaque; se não houver nenhuma,
+   recorre ao título/imagens genéricos configurados pelo admin ───────────── */
+function HeroSlider({ noticias, subtituloFallback, tituloFallback, imagensFallback }) {
   const [slide, setSlide] = useState(0);
-  const srcs = imagens.length ? imagens : ['/images/hero.svg'];
-  const total = srcs.length;
+  const temNoticias = noticias.length > 0;
+  const srcsFallback = imagensFallback.length ? imagensFallback : ['/images/hero.svg'];
+  const total = temNoticias ? noticias.length : srcsFallback.length;
 
   const next = useCallback(() => setSlide(i => (i + 1) % total), [total]);
   const prev = useCallback(() => setSlide(i => (i === 0 ? total - 1 : i - 1)), [total]);
+
+  // Repõe o slide ao mudar de fonte (ex: as notícias acabaram de carregar).
+  useEffect(() => { setSlide(0); }, [temNoticias, total]);
 
   useEffect(() => {
     if (total <= 1) return;
@@ -43,102 +56,76 @@ function HeroSlider({ subtitulo, titulo, imagens }) {
     return () => clearInterval(t);
   }, [next, total]);
 
+  const n = temNoticias ? noticias[slide] : null;
+  const href = n ? `/noticias/${n.slug || n.id}` : null;
+
   return (
     <section className="relative group bg-gray-900 overflow-hidden h-[55vw] min-h-[320px] md:h-[70vh] md:min-h-[480px]">
-      {srcs.map((src, i) => (
-        <img
-          key={src}
-          src={src}
-          alt=""
-          fetchpriority={i === 0 ? 'high' : 'low'}
-          decoding="async"
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${i === slide ? 'opacity-100' : 'opacity-0'}`}
-        />
-      ))}
+      {temNoticias
+        ? noticias.map((item, i) => (
+            <img
+              key={item.id}
+              src={item.imagem_url || '/images/hero.svg'}
+              alt=""
+              fetchpriority={i === 0 ? 'high' : 'low'}
+              decoding="async"
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${i === slide ? 'opacity-100' : 'opacity-0'}`}
+            />
+          ))
+        : srcsFallback.map((src, i) => (
+            <img
+              key={src}
+              src={src}
+              alt=""
+              fetchpriority={i === 0 ? 'high' : 'low'}
+              decoding="async"
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${i === slide ? 'opacity-100' : 'opacity-0'}`}
+            />
+          ))}
       <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/35 to-black/10" />
 
       {/* text */}
       <div className="relative h-full flex flex-col justify-center px-6 sm:px-10 md:px-20 lg:px-28 max-w-3xl">
-        <p className="text-white/75 uppercase tracking-[0.2em] mb-2 text-xs sm:text-sm md:text-base font-light">
-          {subtitulo}
-        </p>
-        <h1 className="text-white font-serif font-bold leading-tight"
-          style={{ fontSize: 'clamp(1.75rem, 6vw, 5.5rem)' }}>
-          {titulo}
-        </h1>
-        <div className="mt-4 w-12 h-1 bg-primary-500" />
+        {temNoticias ? (
+          <Link to={href} className="group/link">
+            <p className="text-white/75 uppercase tracking-[0.2em] mb-2 text-xs sm:text-sm md:text-base font-light">
+              Notícias
+            </p>
+            <h1 className="text-white font-serif font-bold leading-tight group-hover/link:underline decoration-2 underline-offset-4"
+              style={{ fontSize: 'clamp(1.5rem, 5vw, 4.5rem)' }}>
+              {n.titulo}
+            </h1>
+            {n.resumo && (
+              <p className="text-white/80 mt-3 text-sm sm:text-base max-w-xl leading-relaxed line-clamp-2">{n.resumo}</p>
+            )}
+            <div className="mt-4 w-12 h-1 bg-primary-500" />
+          </Link>
+        ) : (
+          <>
+            <p className="text-white/75 uppercase tracking-[0.2em] mb-2 text-xs sm:text-sm md:text-base font-light">
+              {subtituloFallback}
+            </p>
+            <h1 className="text-white font-serif font-bold leading-tight"
+              style={{ fontSize: 'clamp(1.75rem, 6vw, 5.5rem)' }}>
+              {tituloFallback}
+            </h1>
+            <div className="mt-4 w-12 h-1 bg-primary-500" />
+          </>
+        )}
       </div>
 
       {/* arrows */}
-      <button onClick={prev}
-        className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-primary-700 text-white p-2 opacity-0 group-hover:opacity-100 transition-all"
-        aria-label="Slide anterior"><ChevronLeft size={20} /></button>
-      <button onClick={next}
-        className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-primary-700 text-white p-2 opacity-0 group-hover:opacity-100 transition-all"
-        aria-label="Próximo slide"><ChevronRight size={20} /></button>
-
-    </section>
-  );
-}
-
-/* ── News Slider ───────────────────────────────────────────────────────────── */
-function NewsSlider({ noticias }) {
-  const [cur, setCur] = useState(0);
-
-  const prev = useCallback(e => { e.stopPropagation(); setCur(i => (i === 0 ? noticias.length - 1 : i - 1)); }, [noticias.length]);
-  const next = useCallback(e => { e.stopPropagation(); setCur(i => (i === noticias.length - 1 ? 0 : i + 1)); }, [noticias.length]);
-
-  useEffect(() => {
-    if (noticias.length <= 1) return;
-    const t = setInterval(() => setCur(i => (i === noticias.length - 1 ? 0 : i + 1)), 5000);
-    return () => clearInterval(t);
-  }, [noticias.length]);
-
-  if (!noticias.length) {
-    return (
-      <div className="relative bg-white flex flex-col border border-gray-100 min-h-[300px] md:min-h-[440px]">
-        <div className="absolute top-0 left-0 right-0 bg-primary-700 px-5 py-2.5 z-10">
-          <span className="text-white font-bold text-xs tracking-widest uppercase">Notícias</span>
-        </div>
-        <div className="flex-1 flex items-center justify-center">
-          <p className="text-gray-400 text-sm">Sem notícias de momento</p>
-        </div>
-      </div>
-    );
-  }
-
-  const n = noticias[cur];
-  const href = `/noticias/${n.slug || n.id}`;
-
-  return (
-    <div className="relative group bg-white overflow-hidden border border-gray-100 min-h-[300px] md:min-h-[440px]">
-      <Link to={href} className="absolute inset-0 block" tabIndex={-1} aria-hidden="true">
-        {n.imagem_url
-          ? <img src={n.imagem_url} alt={n.titulo} loading="lazy" decoding="async"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 will-change-transform" />
-          : <div className="w-full h-full bg-gray-100" />}
-      </Link>
-
-      <div className="absolute top-0 left-0 bg-primary-700 px-5 py-2.5 z-10">
-        <span className="text-white font-bold text-xs tracking-widest uppercase">Notícias</span>
-      </div>
-
-      {noticias.length > 1 && (
+      {total > 1 && (
         <>
           <button onClick={prev}
-            className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-primary-700 text-white p-2 z-20 opacity-0 group-hover:opacity-100 transition-all"
-            aria-label="Anterior"><ChevronLeft size={20} /></button>
+            className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-primary-700 text-white p-2 opacity-0 group-hover:opacity-100 transition-all"
+            aria-label="Slide anterior"><ChevronLeft size={20} /></button>
           <button onClick={next}
-            className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-primary-700 text-white p-2 z-20 opacity-0 group-hover:opacity-100 transition-all"
-            aria-label="Seguinte"><ChevronRight size={20} /></button>
+            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-primary-700 text-white p-2 opacity-0 group-hover:opacity-100 transition-all"
+            aria-label="Próximo slide"><ChevronRight size={20} /></button>
         </>
       )}
-
-      <Link to={href}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 w-3/4 sm:w-1/2 lg:w-2/5 xl:w-1/4 bg-primary-700/70 hover:bg-primary-700/90 transition-colors px-4 py-3 z-10 block text-center backdrop-blur-sm">
-        <p className="text-white font-semibold text-sm leading-snug line-clamp-2">{n.titulo}</p>
-      </Link>
-    </div>
+    </section>
   );
 }
 
@@ -254,8 +241,13 @@ export default function Home() {
     <div>
       <SocialSidebar />
 
-      {/* ── 1. Hero ─────────────────────────────────────────────────────────── */}
-      <HeroSlider subtitulo={heroSubtitulo} titulo={heroTitulo} imagens={heroImagens} />
+      {/* ── 1. Hero — notícias em destaque, com o título/imagem do admin como recurso ── */}
+      <HeroSlider
+        noticias={noticias}
+        subtituloFallback={heroSubtitulo}
+        tituloFallback={heroTitulo}
+        imagensFallback={heroImagens}
+      />
 
       {/* ── 2. Citação ──────────────────────────────────────────────────────── */}
       <section className="py-20 bg-white">
@@ -270,11 +262,8 @@ export default function Home() {
 
       <Div />
 
-      {/* ── 3. Notícias + Testemunhos ──────────────────────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-gray-200">
-        <NewsSlider noticias={noticias} />
-        <TestemunhosSlider />
-      </div>
+      {/* ── 3. Testemunhos ────────────────────────────────────────────────── */}
+      <TestemunhosSlider />
 
       <Div />
 

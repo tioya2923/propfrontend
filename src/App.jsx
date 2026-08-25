@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ui/ProtectedRoute';
 import ScrollToTop from './components/ui/ScrollToTop';
+import InstallPrompt from './components/ui/InstallPrompt';
 import PublicLayout from './components/layout/PublicLayout';
 import DashboardLayout from './components/layout/DashboardLayout';
 import AdminLayout from './components/layout/AdminLayout';
@@ -20,6 +21,7 @@ import Contactos from './pages/public/Contactos';
 import Noticias from './pages/public/Noticias';
 import NoticiaDetalhe from './pages/public/NoticiaDetalhe';
 import UmDia from './pages/public/UmDia';
+import LegalPage from './pages/public/LegalPage';
 
 // Auth
 import Login from './pages/auth/Login';
@@ -45,6 +47,8 @@ import AdminDefinicoes from './pages/admin/AdminDefinicoes';
 import AdminNoticias from './pages/admin/AdminNoticias';
 import AdminEventos from './pages/admin/AdminEventos';
 import AdminConteudo from './pages/admin/AdminConteudo';
+import AdminHorarios from './pages/admin/AdminHorarios';
+import AdminForum from './pages/admin/AdminForum';
 
 // Professor
 import ProfessorHome from './pages/professor/ProfessorHome';
@@ -67,6 +71,7 @@ export default function App() {
     <AuthProvider>
       <Toaster position="top-right" toastOptions={{ duration: 4000, style: { fontSize: '14px' } }} />
       <ScrollToTop />
+      <InstallPrompt />
       <Routes>
         {/* Public */}
         <Route element={<PublicLayout />}>
@@ -80,8 +85,8 @@ export default function App() {
           <Route path="/noticias" element={<Noticias />} />
           <Route path="/noticias/:id" element={<NoticiaDetalhe />} />
           <Route path="/um-dia" element={<UmDia />} />
-          <Route path="/privacidade" element={<div className="max-w-3xl mx-auto py-16 px-4 prose"><h1>Política de Privacidade</h1><p>Esta página está em construção.</p></div>} />
-          <Route path="/termos" element={<div className="max-w-3xl mx-auto py-16 px-4 prose"><h1>Termos de Uso</h1><p>Esta página está em construção.</p></div>} />
+          <Route path="/privacidade" element={<LegalPage pagina="privacidade" tituloDefault="Política de Privacidade" />} />
+          <Route path="/termos" element={<LegalPage pagina="termos" tituloDefault="Termos de Uso" />} />
         </Route>
 
         {/* Auth */}
@@ -108,6 +113,8 @@ export default function App() {
           <Route path="seminaristas" element={<AdminSeminaristas />} />
           <Route path="noticias" element={<AdminNoticias />} />
           <Route path="eventos" element={<AdminEventos />} />
+          <Route path="horarios" element={<AdminHorarios />} />
+          <Route path="forum" element={<AdminForum />} />
           <Route path="conteudo" element={<AdminConteudo />} />
           <Route path="pagamentos" element={<AdminPagamentos />} />
           <Route path="comunicados" element={<AdminComunicados />} />

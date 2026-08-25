@@ -1,7 +1,7 @@
 import { useApi } from '../../hooks/useApi';
 import { semináristaAPI } from '../../api';
 import { Download, FileText, BookOpen } from 'lucide-react';
-import { formatDate } from '../../utils/format';
+import { formatDate, MATERIAL_TIPO_LABEL } from '../../utils/format';
 
 const ICON = { documento: FileText, livro: BookOpen, apresentacao: FileText };
 
@@ -31,7 +31,7 @@ export default function Materiais() {
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="badge bg-gray-100 text-gray-600 text-xs capitalize">{m.tipo}</span>
+                  <span className="badge bg-gray-100 text-gray-600 text-xs">{MATERIAL_TIPO_LABEL[m.tipo] || m.tipo}</span>
                   <a href={m.ficheiro_url} target="_blank" rel="noreferrer" download className="flex items-center gap-1 text-primary-600 hover:text-primary-700 text-sm font-medium">
                     <Download size={14} /> Descarregar
                   </a>

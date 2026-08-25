@@ -55,10 +55,25 @@ export const adminAPI = {
   aplicarBolsa: (id, data) => api.post(`/admin/seminarista/${id}/bolsa`, data),
   configurarPropina: (data) => api.post('/admin/propina/config', data),
   enviarComunicado: (data) => api.post('/admin/comunicado', data),
+  listComunicados: () => api.get('/admin/comunicados'),
+  deleteComunicado: (id) => api.delete(`/admin/comunicado/${id}`),
   getPagamentos: (params) => api.get('/admin/pagamentos', { params }),
   relatorioArrecadacao: () => api.get('/admin/relatorios/arrecadacao'),
   relatorioDevedores: () => api.get('/admin/relatorios/devedores'),
   uploadMaterial: (formData) => api.post('/admin/material', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  listMateriaisAdmin: () => api.get('/admin/materiais'),
+  deleteMaterialAdmin: (id) => api.delete(`/admin/material/${id}`),
+
+  // Horários
+  listHorarios: () => api.get('/admin/horarios'),
+  createHorario: (data) => api.post('/admin/horario', data),
+  updateHorario: (id, data) => api.put(`/admin/horario/${id}`, data),
+  deleteHorario: (id) => api.delete(`/admin/horario/${id}`),
+
+  // Fórum (moderação)
+  listForum: (params) => api.get('/admin/forum', { params }),
+  pinForumPost: (id) => api.post(`/admin/forum/${id}/fixar`),
+  deleteForumPost: (id) => api.delete(`/admin/forum/${id}`),
 
   // Conteúdo de páginas
   getConteudo: (pagina) => api.get(`/conteudo/${pagina}`),

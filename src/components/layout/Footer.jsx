@@ -19,6 +19,7 @@ const DEFAULTS = {
   email: 'info@sje.ao',
   telefone: '+244 xxx xxx xxx',
   morada: 'Huambo, Angola',
+  mapa_embed_url: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126094!2d15.739!3d-12.775!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1ebb2b5c1a7c9f35%3A0x0!2zSHVhbWJv!5e0!3m2!1spt!2sao!4v1700000000000',
 };
 
 export default function Footer() {
@@ -70,27 +71,34 @@ export default function Footer() {
                 </div>
               )}
             </div>
-            <div className="flex gap-4 mt-6">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors" aria-label="Facebook">
-                <Facebook size={22} />
-              </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors" aria-label="Instagram">
-                <Instagram size={22} />
-              </a>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors" aria-label="YouTube">
-                <Youtube size={22} />
-              </a>
-            </div>
+            {(c.facebook_url || c.instagram_url || c.youtube_url) && (
+              <div className="flex gap-4 mt-6">
+                {c.facebook_url && (
+                  <a href={c.facebook_url} target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors" aria-label="Facebook">
+                    <Facebook size={22} />
+                  </a>
+                )}
+                {c.instagram_url && (
+                  <a href={c.instagram_url} target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors" aria-label="Instagram">
+                    <Instagram size={22} />
+                  </a>
+                )}
+                {c.youtube_url && (
+                  <a href={c.youtube_url} target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors" aria-label="YouTube">
+                    <Youtube size={22} />
+                  </a>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Localização */}
           <div>
             <h4 className="font-bold text-base mb-5">Localização</h4>
             <div className="rounded overflow-hidden border border-white/20" style={{ height: '170px' }}>
-              {/* Replace the src below with your actual Google Maps embed URL */}
               <iframe
                 title="Localização Seminário Propedêutico São João Evangelista"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126094!2d15.739!3d-12.775!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1ebb2b5c1a7c9f35%3A0x0!2zSHVhbWJv!5e0!3m2!1spt!2sao!4v1700000000000"
+                src={c.mapa_embed_url || DEFAULTS.mapa_embed_url}
                 width="100%"
                 height="170"
                 style={{ border: 0 }}

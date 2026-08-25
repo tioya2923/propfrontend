@@ -123,7 +123,7 @@ export default function AdminHome() {
               {devedores.slice(0, 5).map(d => (
                 <div key={d.id} className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2 min-w-0">
-                    <Link to={`/admin/seminaristas/${d.user?.id}`}
+                    <Link to="/admin/seminaristas"
                       className="text-sm text-gray-900 hover:text-primary-600 font-medium truncate">
                       {d.user?.nome}
                     </Link>

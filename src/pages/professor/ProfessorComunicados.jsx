@@ -68,7 +68,7 @@ export default function ProfessorComunicados() {
               <div className="flex items-start justify-between">
                 <h3 className="font-semibold text-gray-900">{c.titulo}</h3>
                 <span className="text-xs text-gray-400 shrink-0 ml-4">
-                  {new Date(c.created_at).toLocaleDateString('pt-PT')}
+                  {new Date(c.createdAt).toLocaleDateString('pt-PT')}
                 </span>
               </div>
               <p className="text-sm text-gray-600 mt-2 whitespace-pre-wrap">{c.conteudo}</p>
