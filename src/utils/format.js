@@ -49,3 +49,17 @@ export const ANOS_FORMACAO = [1, 2];
 export const SECCAO_LABEL = {};
 export const SECCAO_SHORT = {};
 export const SECCAO_ANOS = {};
+
+export const NOTICIA_CATEGORIA_LABEL = {
+  geral: 'Geral', eventos: 'Eventos', academico: 'Académico',
+  formacao: 'Formação', comunidade: 'Comunidade', vocacao: 'Vocação',
+};
+
+export const MATERIAL_TIPO_LABEL = {
+  documento: 'Documento', livro: 'Livro', apresentacao: 'Apresentação', outro: 'Outro',
+  apostila: 'Apostila', exercicio: 'Exercício', leitura: 'Leitura',
+};
+
+export const PAGAMENTO_METODO_LABEL = {
+  cartao: 'Cartão', multibanco: 'Multibanco', transferencia: 'Transferência',
+};

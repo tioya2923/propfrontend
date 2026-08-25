@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { Upload, Trash2, FileDown } from 'lucide-react';
 import { professorAPI } from '../../api';
+import { MATERIAL_TIPO_LABEL } from '../../utils/format';
 import toast from 'react-hot-toast';
 
 const BACKEND = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/api$/, '');
@@ -68,7 +69,7 @@ export default function ProfessorMateriais() {
             <div>
               <label className="label">Tipo</label>
               <select className="input" value={form.tipo} onChange={e => setForm(f => ({ ...f, tipo: e.target.value }))}>
-                {TIPOS.map(t => <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>)}
+                {TIPOS.map(t => <option key={t} value={t}>{MATERIAL_TIPO_LABEL[t] || t}</option>)}
               </select>
             </div>
             <div>
@@ -91,7 +92,7 @@ export default function ProfessorMateriais() {
             <div key={m.id} className="card flex items-center justify-between gap-3">
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-gray-900 truncate">{m.titulo}</p>
-                <p className="text-xs text-gray-400">{m.tipo}{m.ano_formacao ? ` · Ano ${m.ano_formacao}` : ' · Todos os anos'}</p>
+                <p className="text-xs text-gray-400">{MATERIAL_TIPO_LABEL[m.tipo] || m.tipo}{m.ano_formacao ? ` · Ano ${m.ano_formacao}` : ' · Todos os anos'}</p>
                 {m.descricao && <p className="text-sm text-gray-500 mt-0.5">{m.descricao}</p>}
               </div>
               <div className="flex items-center gap-2 shrink-0">

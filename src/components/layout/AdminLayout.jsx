@@ -1,5 +1,5 @@
 import { NavLink, Outlet, Link } from 'react-router-dom';
-import { LayoutDashboard, Users, CreditCard, Megaphone, BarChart2, Settings, LogOut, Menu, X, Upload, Newspaper, CalendarDays, FileEdit } from 'lucide-react';
+import { LayoutDashboard, Users, CreditCard, Megaphone, BarChart2, Settings, LogOut, Menu, X, Upload, Newspaper, CalendarDays, FileEdit, Clock, MessageSquare } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -8,9 +8,11 @@ const navItems = [
   { label: 'Membros e Seminaristas', href: '/admin/seminaristas', icon: Users },
   { label: 'Notícias', href: '/admin/noticias', icon: Newspaper },
   { label: 'Eventos', href: '/admin/eventos', icon: CalendarDays },
+  { label: 'Horários', href: '/admin/horarios', icon: Clock },
   { label: 'Conteúdo', href: '/admin/conteudo', icon: FileEdit },
   { label: 'Pagamentos', href: '/admin/pagamentos', icon: CreditCard },
   { label: 'Comunicados', href: '/admin/comunicados', icon: Megaphone },
+  { label: 'Fórum', href: '/admin/forum', icon: MessageSquare },
   { label: 'Materiais', href: '/admin/materiais', icon: Upload },
   { label: 'Relatórios', href: '/admin/relatorios', icon: BarChart2 },
   { label: 'Definições', href: '/admin/definicoes', icon: Settings },

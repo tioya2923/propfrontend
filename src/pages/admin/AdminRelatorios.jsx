@@ -63,7 +63,7 @@ export default function AdminRelatorios() {
                   {devedores.map(d => (
                     <tr key={d.id}>
                       <td className="py-2">
-                        <Link to={`/admin/seminaristas/${d.user?.id}`} className="hover:text-primary-600 font-medium">{d.user?.nome}</Link>
+                        <Link to="/admin/seminaristas" className="hover:text-primary-600 font-medium">{d.user?.nome}</Link>
                         <p className="text-xs text-gray-400">{d.user?.email}</p>
                       </td>
                       <td className="py-2 text-right font-semibold text-red-600">{formatCurrency(d.saldo_devedor, d.moeda)}</td>

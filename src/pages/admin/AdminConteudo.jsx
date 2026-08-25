@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { adminAPI } from '../../api';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
-import { Save, Plus, Trash2, ChevronDown, ChevronUp, Upload, X, Lock } from 'lucide-react';
+import { Save, Plus, Trash2, ChevronDown, ChevronUp, Upload, X, Lock, Edit2, Check } from 'lucide-react';
 
 // ── Upload / URL de imagem ─────────────────────────────────────────────────────
 function ImagemUpload({ label, value, onChange, hint }) {
@@ -196,10 +196,14 @@ function CurriculoEditor({ label, items, onChange }) {
 }
 
 // ── Secção Equipa ──────────────────────────────────────────────────────────────
+const EMPTY_MEMBRO = { nome: '', cargo: '', area: '', ordem: 0, ativo: true };
+
 function SecçãoEquipa() {
   const [membros, setMembros] = useState([]);
-  const [form, setForm] = useState({ nome: '', cargo: '', area: '', ordem: 0 });
+  const [editId, setEditId] = useState(null); // null = a criar; string = a editar esse id
+  const [form, setForm] = useState({ ...EMPTY_MEMBRO });
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   const load = useCallback(async () => {
     try { const r = await adminAPI.getEquipa(); setMembros(r.data); } catch {}
@@ -208,16 +212,44 @@ function SecçãoEquipa() {
 
   useEffect(() => { load(); }, [load]);
 
-  async function handleCreate(e) {
+  function abrirEditar(m) {
+    setEditId(m.id);
+    setForm({ nome: m.nome, cargo: m.cargo, area: m.area || '', ordem: m.ordem ?? 0, ativo: m.ativo });
+  }
+
+  function cancelarEdicao() {
+    setEditId(null);
+    setForm({ ...EMPTY_MEMBRO });
+  }
+
+  async function handleSubmit(e) {
     e.preventDefault();
-    try { await adminAPI.createMembro(form); toast.success('Membro adicionado'); load(); setForm({ nome: '', cargo: '', area: '', ordem: 0 }); }
-    catch { toast.error('Erro ao adicionar membro'); }
+    setSaving(true);
+    try {
+      if (editId) {
+        await adminAPI.updateMembro(editId, form);
+        toast.success('Membro actualizado');
+      } else {
+        await adminAPI.createMembro(form);
+        toast.success('Membro adicionado');
+      }
+      cancelarEdicao();
+      load();
+    } catch {
+      toast.error(editId ? 'Erro ao actualizar membro' : 'Erro ao adicionar membro');
+    } finally {
+      setSaving(false);
+    }
   }
 
   async function handleDelete(id) {
     if (!confirm('Eliminar membro?')) return;
-    try { await adminAPI.deleteMembro(id); toast.success('Eliminado'); load(); }
-    catch { toast.error('Erro ao eliminar'); }
+    try {
+      await adminAPI.deleteMembro(id);
+      toast.success('Eliminado');
+      if (editId === id) cancelarEdicao();
+      load();
+    } catch { toast.error('Erro ao eliminar'); }
   }
 
   const lista = [...membros].sort((a, b) => a.ordem - b.ordem);
@@ -231,27 +263,52 @@ function SecçãoEquipa() {
         ) : (
           <div className="space-y-2">
             {lista.map(m => (
-              <div key={m.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-100">
+              <div key={m.id} className={`flex items-center justify-between p-3 rounded-lg border ${editId === m.id ? 'bg-primary-50 border-primary-200' : 'bg-gray-50 border-gray-100'}`}>
                 <div>
-                  <p className="font-medium text-sm text-gray-900">{m.nome}</p>
+                  <p className="font-medium text-sm text-gray-900 flex items-center gap-2">
+                    {m.nome}
+                    {!m.ativo && <span className="badge bg-gray-200 text-gray-500 text-xs">Inactivo</span>}
+                  </p>
                   <p className="text-xs text-gray-500">{m.cargo}{m.area ? ` · ${m.area}` : ''}</p>
                 </div>
-                <button onClick={() => handleDelete(m.id)} className="text-red-400 hover:text-red-600"><Trash2 size={15} /></button>
+                <div className="flex items-center gap-1">
+                  <button onClick={() => abrirEditar(m)} className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Editar">
+                    <Edit2 size={15} />
+                  </button>
+                  <button onClick={() => handleDelete(m.id)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Eliminar">
+                    <Trash2 size={15} />
+                  </button>
+                </div>
               </div>
             ))}
             {!lista.length && <p className="text-sm text-gray-400 text-center py-4">Nenhum membro</p>}
           </div>
         )}
       </div>
-      <form onSubmit={handleCreate} className="card border-dashed">
-        <h3 className="font-semibold text-gray-800 mb-4">Adicionar Membro da Direcção</h3>
+      <form onSubmit={handleSubmit} className="card border-dashed">
+        <h3 className="font-semibold text-gray-800 mb-4">{editId ? 'Editar Membro da Direcção' : 'Adicionar Membro da Direcção'}</h3>
         <div className="grid sm:grid-cols-2 gap-4">
           <div><label className="label">Nome *</label><input required value={form.nome} onChange={e => setForm(f => ({ ...f, nome: e.target.value }))} className="input" /></div>
           <div><label className="label">Cargo *</label><input required value={form.cargo} onChange={e => setForm(f => ({ ...f, cargo: e.target.value }))} className="input" /></div>
           <div><label className="label">Área</label><input value={form.area} onChange={e => setForm(f => ({ ...f, area: e.target.value }))} className="input" placeholder="Ex: Direcção, Espiritual" /></div>
-          <div><label className="label">Ordem de exibição</label><input type="number" value={form.ordem} onChange={e => setForm(f => ({ ...f, ordem: parseInt(e.target.value) }))} className="input" /></div>
+          <div><label className="label">Ordem de exibição</label><input type="number" value={form.ordem} onChange={e => setForm(f => ({ ...f, ordem: parseInt(e.target.value) || 0 }))} className="input" /></div>
+          {editId && (
+            <div>
+              <label className="label">Estado</label>
+              <select value={form.ativo ? 'true' : 'false'} onChange={e => setForm(f => ({ ...f, ativo: e.target.value === 'true' }))} className="input">
+                <option value="true">Activo (visível no site)</option>
+                <option value="false">Inactivo (oculto do site)</option>
+              </select>
+            </div>
+          )}
         </div>
-        <button type="submit" className="btn-primary mt-4 flex items-center gap-2"><Plus size={16} />Adicionar</button>
+        <div className="flex gap-3 mt-4">
+          <button type="submit" disabled={saving} className="btn-primary flex items-center gap-2 disabled:opacity-50">
+            {editId ? <Check size={16} /> : <Plus size={16} />}
+            {saving ? 'A guardar…' : (editId ? 'Guardar alterações' : 'Adicionar')}
+          </button>
+          {editId && <button type="button" onClick={cancelarEdicao} className="btn-secondary">Cancelar</button>}
+        </div>
       </form>
     </div>
   );
@@ -268,6 +325,8 @@ const TABS = [
   { id: 'formacao', label: 'Formação' },
   { id: 'um_dia', label: 'Um Dia' },
   { id: 'equipa', label: 'Equipa Formadora' },
+  { id: 'privacidade', label: 'Política de Privacidade' },
+  { id: 'termos', label: 'Termos de Uso' },
 ];
 
 export default function AdminConteudo() {
@@ -398,11 +457,32 @@ export default function AdminConteudo() {
               hint="Endereço físico do Seminário Propedêutico São João Evangelista."
             />
 
+            <SectionHeader>Redes Sociais</SectionHeader>
+            <p className="text-xs text-gray-400 -mt-3">Deixe em branco para ocultar o respectivo ícone no rodapé do site.</p>
+            <Campo label="Facebook" value={data.facebook_url || ''} onChange={set('facebook_url')} placeholder="https://facebook.com/..." />
+            <Campo label="Instagram" value={data.instagram_url || ''} onChange={set('instagram_url')} placeholder="https://instagram.com/..." />
+            <Campo label="Twitter / X" value={data.twitter_url || ''} onChange={set('twitter_url')} placeholder="https://x.com/..." />
+            <Campo label="YouTube" value={data.youtube_url || ''} onChange={set('youtube_url')} placeholder="https://youtube.com/..." />
+
+            <SectionHeader>Mapa</SectionHeader>
+            <Campo
+              label="URL de incorporação do Google Maps"
+              value={data.mapa_embed_url || ''}
+              onChange={set('mapa_embed_url')}
+              hint='No Google Maps: Partilhar → Incorporar um mapa → copie apenas o valor do atributo src="..." do código fornecido.'
+              placeholder="https://www.google.com/maps/embed?pb=..."
+            />
+
             <SaveBtn campos={[
               { chave: 'telefone', valor: data.telefone, tipo: 'text' },
               { chave: 'email', valor: data.email, tipo: 'text' },
               { chave: 'horario', valor: data.horario, tipo: 'text' },
               { chave: 'morada', valor: data.morada, tipo: 'text' },
+              { chave: 'facebook_url', valor: data.facebook_url, tipo: 'text' },
+              { chave: 'instagram_url', valor: data.instagram_url, tipo: 'text' },
+              { chave: 'twitter_url', valor: data.twitter_url, tipo: 'text' },
+              { chave: 'youtube_url', valor: data.youtube_url, tipo: 'text' },
+              { chave: 'mapa_embed_url', valor: data.mapa_embed_url, tipo: 'text' },
             ]} />
           </div>
         );
@@ -719,6 +799,54 @@ export default function AdminConteudo() {
 
       case 'equipa':
         return <SecçãoEquipa />;
+
+      // ── Política de Privacidade ───────────────────────────────────────────────
+      case 'privacidade':
+        if (!isSuperAdmin) {
+          return (
+            <div className="max-w-xl">
+              <div className="flex items-center gap-3 p-4 bg-amber-50 border border-amber-200 rounded-lg text-amber-800">
+                <Lock size={18} className="shrink-0" />
+                <p className="text-sm">Esta secção é gerida exclusivamente pelo <strong>Administrador Geral</strong>.</p>
+              </div>
+            </div>
+          );
+        }
+        return (
+          <div className="space-y-4 max-w-2xl">
+            <p className="text-sm text-gray-500">Conteúdo exibido na página pública «Política de Privacidade».</p>
+            <Campo label="Título da página" value={data.titulo || ''} onChange={set('titulo')} placeholder="Política de Privacidade" />
+            <Campo label="Texto" value={data.conteudo || ''} onChange={set('conteudo')} multiline hint="Escreva um parágrafo por linha." />
+            <SaveBtn campos={[
+              { chave: 'titulo', valor: data.titulo, tipo: 'text' },
+              { chave: 'conteudo', valor: data.conteudo, tipo: 'text' },
+            ]} />
+          </div>
+        );
+
+      // ── Termos de Uso ─────────────────────────────────────────────────────────
+      case 'termos':
+        if (!isSuperAdmin) {
+          return (
+            <div className="max-w-xl">
+              <div className="flex items-center gap-3 p-4 bg-amber-50 border border-amber-200 rounded-lg text-amber-800">
+                <Lock size={18} className="shrink-0" />
+                <p className="text-sm">Esta secção é gerida exclusivamente pelo <strong>Administrador Geral</strong>.</p>
+              </div>
+            </div>
+          );
+        }
+        return (
+          <div className="space-y-4 max-w-2xl">
+            <p className="text-sm text-gray-500">Conteúdo exibido na página pública «Termos de Uso».</p>
+            <Campo label="Título da página" value={data.titulo || ''} onChange={set('titulo')} placeholder="Termos de Uso" />
+            <Campo label="Texto" value={data.conteudo || ''} onChange={set('conteudo')} multiline hint="Escreva um parágrafo por linha." />
+            <SaveBtn campos={[
+              { chave: 'titulo', valor: data.titulo, tipo: 'text' },
+              { chave: 'conteudo', valor: data.conteudo, tipo: 'text' },
+            ]} />
+          </div>
+        );
 
       default:
         return null;

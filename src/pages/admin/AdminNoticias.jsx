@@ -7,6 +7,10 @@ import toast from 'react-hot-toast';
 
 const BACKEND = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/api$/, '');
 const CATEGORIAS = ['geral', 'eventos', 'academico', 'formacao', 'comunidade', 'vocacao'];
+const CATEGORIA_LABEL = {
+  geral: 'Geral', eventos: 'Eventos', academico: 'Académico',
+  formacao: 'Formação', comunidade: 'Comunidade', vocacao: 'Vocação',
+};
 const EMPTY = { titulo: '', resumo: '', conteudo: '', imagem_url: '', categoria: 'geral', destaque: false, publicado: false };
 
 function ImageUpload({ value, onChange }) {
@@ -134,8 +138,8 @@ export default function AdminNoticias() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3 capitalize text-gray-500">{n.categoria}</td>
-                  <td className="px-4 py-3 text-gray-500">{formatDate(n.data_publicacao || n.created_at)}</td>
+                  <td className="px-4 py-3 text-gray-500">{CATEGORIA_LABEL[n.categoria] || n.categoria}</td>
+                  <td className="px-4 py-3 text-gray-500">{formatDate(n.data_publicacao || n.createdAt)}</td>
                   <td className="px-4 py-3">
                     <span className={`badge text-xs ${n.publicado ? 'bg-wine-100 text-wine-700' : 'bg-gray-100 text-gray-500'}`}>
                       {n.publicado ? 'Publicada' : 'Rascunho'}
@@ -181,7 +185,7 @@ export default function AdminNoticias() {
               <div className="grid grid-cols-2 gap-4">
                 <div><label className="label">Categoria</label>
                   <select value={form.categoria} onChange={e => set('categoria')(e.target.value)} className="input">
-                    {CATEGORIAS.map(c => <option key={c} value={c}>{c}</option>)}
+                    {CATEGORIAS.map(c => <option key={c} value={c}>{CATEGORIA_LABEL[c] || c}</option>)}
                   </select>
                 </div>
                 <div className="flex flex-col gap-3 pt-6">

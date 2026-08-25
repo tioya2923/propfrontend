@@ -5,7 +5,12 @@ import { publicAPI } from '../../api';
 import { useApi } from '../../hooks/useApi';
 import { formatDate } from '../../utils/format';
 
-const CATEGORIAS = ['todas', 'geral', 'eventos', 'formacao', 'comunidade', 'vocacao'];
+const CATEGORIAS = ['todas', 'geral', 'eventos', 'academico', 'formacao', 'comunidade', 'vocacao'];
+
+const CATEGORIA_LABEL = {
+  todas: 'Todas', geral: 'Geral', eventos: 'Eventos', academico: 'Académico',
+  formacao: 'Formação', comunidade: 'Comunidade', vocacao: 'Vocação',
+};
 
 const TIPO_LABEL = {
   liturgico: 'Litúrgico', academico: 'Académico', formacao: 'Formação',
@@ -79,8 +84,8 @@ export default function Noticias() {
           <div className="flex flex-wrap gap-2 mb-10">
             {CATEGORIAS.map(c => (
               <button key={c} onClick={() => mudarCategoria(c)}
-                className={`badge px-4 py-2 text-sm cursor-pointer transition-colors capitalize ${categoria === c ? 'bg-primary-700 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
-                {c}
+                className={`badge px-4 py-2 text-sm cursor-pointer transition-colors ${categoria === c ? 'bg-primary-700 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
+                {CATEGORIA_LABEL[c] || c}
               </button>
             ))}
           </div>
@@ -118,7 +123,7 @@ export default function Noticias() {
                   {data?.noticias?.map(n => (
                     <Link key={n.id} to={`/noticias/${n.slug || n.id}`} className="card hover:shadow-md transition-shadow group">
                       {n.imagem_url && <img src={n.imagem_url} alt={n.titulo} className="w-full h-44 object-contain rounded-lg mb-4" loading="lazy" />}
-                      <span className="badge bg-primary-100 text-primary-800 mb-2 capitalize">{n.categoria}</span>
+                      <span className="badge bg-primary-100 text-primary-800 mb-2">{CATEGORIA_LABEL[n.categoria] || n.categoria}</span>
                       <h2 className="font-semibold text-gray-900 group-hover:text-primary-700 transition-colors line-clamp-2 mb-2">{n.titulo}</h2>
                       <p className="text-sm text-gray-500 line-clamp-2 mb-3">{n.resumo}</p>
                       <p className="text-xs text-gray-400">{formatDate(n.data_publicacao)}</p>

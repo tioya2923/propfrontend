@@ -11,3 +11,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </BrowserRouter>
   </React.StrictMode>
 );
+
+// Necessário para o site poder ser instalado como PWA (Chrome/Android exige um
+// service worker registado). Falha silenciosamente em navegadores sem suporte.
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}

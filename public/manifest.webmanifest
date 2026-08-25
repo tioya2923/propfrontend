@@ -1,0 +1,15 @@
+{
+  "name": "Seminário Propedêutico São João Evangelista",
+  "short_name": "SJE",
+  "description": "Portal do Seminário Propedêutico São João Evangelista — Huambo, Angola.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#8b1a2e",
+  "lang": "pt",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

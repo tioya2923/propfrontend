@@ -4,6 +4,11 @@ import { publicAPI } from '../../api';
 import { formatDate } from '../../utils/format';
 import { ArrowLeft } from 'lucide-react';
 
+const CATEGORIA_LABEL = {
+  geral: 'Geral', eventos: 'Eventos', academico: 'Académico',
+  formacao: 'Formação', comunidade: 'Comunidade', vocacao: 'Vocação',
+};
+
 export default function NoticiaDetalhe() {
   const { id } = useParams();
   const { data: noticia, loading, error } = useApi(() => publicAPI.getNoticia(id), [id]);
@@ -28,7 +33,7 @@ export default function NoticiaDetalhe() {
           <ArrowLeft size={16} /> Todas as notícias
         </Link>
 
-        <span className="badge bg-primary-100 text-primary-800 mb-4 capitalize">{noticia.categoria}</span>
+        <span className="badge bg-primary-100 text-primary-800 mb-4">{CATEGORIA_LABEL[noticia.categoria] || noticia.categoria}</span>
         <h1 className="text-4xl font-serif font-bold text-gray-900 mb-4">{noticia.titulo}</h1>
         <p className="text-gray-500 text-sm mb-8">{formatDate(noticia.data_publicacao)}</p>
 

@@ -1,31 +1,60 @@
-import { useState } from 'react';
-import { propinaAPI } from '../../api';
+import { useState, useEffect } from 'react';
+import { propinaAPI, publicAPI } from '../../api';
 import { useApi } from '../../hooks/useApi';
-import { formatCurrency, formatDate } from '../../utils/format';
-import { Download, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { formatCurrency, formatDate, PAGAMENTO_METODO_LABEL } from '../../utils/format';
+import { Download, AlertCircle, CheckCircle2, CreditCard, Landmark } from 'lucide-react';
 import toast from 'react-hot-toast';
+import StripeCheckoutModal, { stripePromise } from '../../components/ui/StripeCheckoutModal';
 
 export default function Propinas() {
-  const { data: divida, loading, error } = useApi(() => propinaAPI.getMinhaDivida(), []);
+  const { data: divida, loading, error, reload } = useApi(() => propinaAPI.getMinhaDivida(), []);
   const [paying, setPaying] = useState(false);
   const [prorrogacao, setProrrogacao] = useState(false);
   const [motivo, setMotivo] = useState('');
+  const [checkout, setCheckout] = useState(null); // { clientSecret, paymentId }
+  const [referencia, setReferencia] = useState(null); // referência Multibanco gerada
+  const [cartaoConfigurado, setCartaoConfigurado] = useState(false);
+
+  useEffect(() => {
+    publicAPI.getDonativosStatus()
+      .then(r => setCartaoConfigurado(!!r.data.disponivel))
+      .catch(() => setCartaoConfigurado(false));
+  }, []);
+
+  const ehAOA = divida?.moeda === 'AOA';
+  const cartaoDisponivel = cartaoConfigurado && !!stripePromise;
 
   async function handlePagar() {
     if (!divida || parseFloat(divida.saldo_devedor) <= 0) return toast('Não tem saldo devedor');
     setPaying(true);
+    setReferencia(null);
     try {
-      const res = await propinaAPI.pagar({ valor: divida.saldo_devedor, metodo: 'cartao', periodo_referencia: new Date().toISOString().slice(0, 7) });
-      if (res.data.client_secret) {
-        toast.success('Pagamento iniciado. Integre o Stripe Elements com o client_secret.');
+      const periodo_referencia = new Date().toISOString().slice(0, 7);
+      if (ehAOA) {
+        const res = await propinaAPI.pagar({ valor: divida.saldo_devedor, metodo: 'multibanco', periodo_referencia });
+        setReferencia(res.data.referencia);
       } else {
-        toast.success(`Referência: ${res.data.referencia}`);
+        const res = await propinaAPI.pagar({ valor: divida.saldo_devedor, metodo: 'cartao', periodo_referencia });
+        setCheckout({ clientSecret: res.data.client_secret, paymentId: res.data.payment_id });
       }
     } catch (err) {
       toast.error(err.response?.data?.erro || 'Erro ao iniciar pagamento');
     } finally {
       setPaying(false);
     }
+  }
+
+  async function handlePagamentoConfirmado(paymentIntent) {
+    try {
+      await propinaAPI.confirmar({ payment_id: checkout.paymentId, payment_intent_id: paymentIntent.id });
+      toast.success('Pagamento confirmado com sucesso!');
+    } catch {
+      // O backend confirma sempre junto do Stripe antes de aceitar — se esta chamada
+      // falhar por instabilidade de rede, o webhook do Stripe reconcilia o estado depois.
+      toast.success('Pagamento efectuado. A confirmar com a administração…');
+    }
+    setCheckout(null);
+    reload();
   }
 
   async function handleDownload(id) {
@@ -86,14 +115,47 @@ export default function Propinas() {
           </div>
 
           {parseFloat(divida.saldo_devedor) > 0 && (
-            <div className="flex flex-col sm:flex-row gap-3">
-              <button onClick={handlePagar} disabled={paying} className="btn-primary">
-                {paying ? 'A processar...' : `Pagar ${formatCurrency(divida.saldo_devedor, divida.moeda)}`}
-              </button>
+            <div className="flex flex-col sm:flex-row gap-3 items-start">
+              {ehAOA ? (
+                <button onClick={handlePagar} disabled={paying} className="btn-primary flex items-center gap-2 disabled:opacity-50">
+                  <Landmark size={16} /> {paying ? 'A gerar referência...' : `Gerar Referência de ${formatCurrency(divida.saldo_devedor, divida.moeda)}`}
+                </button>
+              ) : cartaoDisponivel ? (
+                <button onClick={handlePagar} disabled={paying} className="btn-primary flex items-center gap-2 disabled:opacity-50">
+                  <CreditCard size={16} /> {paying ? 'A preparar pagamento...' : `Pagar ${formatCurrency(divida.saldo_devedor, divida.moeda)}`}
+                </button>
+              ) : (
+                <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                  Pagamento por cartão indisponível de momento. Contacte a administração.
+                </p>
+              )}
               <button onClick={() => setProrrogacao(true)} className="btn-secondary">Pedir Prorrogação</button>
             </div>
           )}
+
+          {/* Referência Multibanco gerada */}
+          {referencia && (
+            <div className="mt-4 bg-primary-50 border border-primary-200 rounded-xl p-4">
+              <p className="text-sm text-primary-800 mb-1">Referência gerada para pagamento via Multibanco:</p>
+              <p className="text-2xl font-mono font-bold text-primary-700 tracking-widest">{referencia}</p>
+              <p className="text-xs text-gray-500 mt-2">
+                Efectue o pagamento no Multibanco/ATM ou Internet Banking. O saldo é actualizado assim que a administração confirmar a transferência.
+              </p>
+              <button onClick={() => setReferencia(null)} className="text-xs text-gray-500 hover:underline mt-2">Fechar</button>
+            </div>
+          )}
         </div>
+      )}
+
+      {/* Checkout Stripe Elements */}
+      {checkout && (
+        <StripeCheckoutModal
+          clientSecret={checkout.clientSecret}
+          valor={divida.saldo_devedor}
+          moeda={divida.moeda}
+          onClose={() => setCheckout(null)}
+          onSuccess={handlePagamentoConfirmado}
+        />
       )}
 
       {/* Prorrogação modal */}
@@ -132,7 +194,7 @@ export default function Propinas() {
                   <tr key={p.id} className="hover:bg-gray-50">
                     <td className="py-3 pr-4">{formatDate(p.data_pagamento)}</td>
                     <td className="py-3 pr-4 font-medium">{formatCurrency(p.valor, p.moeda)}</td>
-                    <td className="py-3 pr-4 capitalize">{p.metodo}</td>
+                    <td className="py-3 pr-4">{PAGAMENTO_METODO_LABEL[p.metodo] || p.metodo}</td>
                     <td className="py-3 pr-4">{p.periodo_referencia || '—'}</td>
                     <td className="py-3">
                       <button onClick={() => handleDownload(p.id)} className="flex items-center gap-1 text-primary-600 hover:text-primary-700">

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { publicAPI } from '../../api';
 import { useConteudo } from '../../hooks/useConteudo';
 import toast from 'react-hot-toast';
+import StripeCheckoutModal from '../../components/ui/StripeCheckoutModal';
 
 const DEFAULTS = {
   hero_subtitulo: 'A sua generosidade transforma vidas e forma sacerdotes ao serviço de Angola.',
@@ -33,6 +34,7 @@ function DonatePage() {
   const [loading, setLoading] = useState(false);
   const [stripeOk, setStripeOk] = useState(false);
   const [sucesso, setSucesso] = useState(null);
+  const [checkout, setCheckout] = useState(null); // { clientSecret } — donativo por cartão em curso
 
   useEffect(() => {
     publicAPI.getDonativosStatus()
@@ -64,12 +66,18 @@ function DonatePage() {
         const r = await publicAPI.mbwayDonativo({ nome, email, valor: parseFloat(valor), telefone });
         setSucesso(r.data.manual ? { manual: true } : { mbway: true });
       } else {
-        await publicAPI.criarDonativo({ nome, email, valor: parseFloat(valor), moeda: 'EUR' });
-        toast.success('A redirecionar para pagamento…');
+        const r = await publicAPI.criarDonativo({ nome, email, valor: parseFloat(valor), moeda: 'EUR' });
+        setCheckout({ clientSecret: r.data.client_secret });
       }
     } catch (err) {
       toast.error(err.response?.data?.erro || 'Erro ao processar');
     } finally { setLoading(false); }
+  }
+
+  async function handlePagamentoConfirmado() {
+    setCheckout(null);
+    setSucesso({ cartao: true, valorPago: fmt(parseFloat(valor) || 0) });
+    toast.success('Donativo confirmado. Muito obrigado pela sua generosidade!');
   }
 
   /* ── Ecrã de sucesso ── */
@@ -91,6 +99,15 @@ function DonatePage() {
     </div>
   );
 
+  if (sucesso?.cartao) return (
+    <div id="donativo" className="card max-w-md mx-auto text-center py-8">
+      <div className="text-5xl mb-4">🙏</div>
+      <h3 className="text-xl font-semibold mb-2 text-gray-900">Obrigado pela sua generosidade!</h3>
+      <p className="text-gray-600 mb-6">O seu donativo de <strong>{sucesso.valorPago}</strong> foi processado com sucesso.</p>
+      <button onClick={() => setSucesso(null)} className="btn-secondary text-sm">Fazer outro donativo</button>
+    </div>
+  );
+
   if (sucesso?.manual) return (
     <div id="donativo" className="card max-w-md mx-auto text-center py-8">
       <div className="text-5xl mb-4">📱</div>
@@ -107,6 +124,7 @@ function DonatePage() {
   );
 
   return (
+    <>
     <div id="donativo" className="card max-w-md mx-auto">
       <h3 className="text-xl font-semibold mb-5 text-gray-900">Fazer uma Doação</h3>
 
@@ -181,6 +199,19 @@ function DonatePage() {
         </p>
       </form>
     </div>
+
+    {checkout && (
+      <StripeCheckoutModal
+        clientSecret={checkout.clientSecret}
+        valor={parseFloat(valor) || 0}
+        moeda="EUR"
+        title="Doar com Cartão"
+        submitLabel={`Doar ${fmt(parseFloat(valor) || 0)}`}
+        onClose={() => setCheckout(null)}
+        onSuccess={handlePagamentoConfirmado}
+      />
+    )}
+    </>
   );
 }
 
