@@ -1,7 +1,7 @@
 import { useApi } from '../../hooks/useApi';
 import { adminAPI } from '../../api';
 import { useAuth } from '../../context/AuthContext';
-import { formatCurrency } from '../../utils/format';
+import { formatCurrency, formatCurrencyBreakdown, agruparArrecadacaoPorMes } from '../../utils/format';
 import { Users, TrendingUp, AlertTriangle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -28,26 +28,31 @@ const COR = {
 export default function AdminHome() {
   const { isSuperAdmin } = useAuth();
   const { data: stats } = useApi(() => adminAPI.getStats(), []);
-  const { data: arrecadacao } = useApi(() => adminAPI.relatorioArrecadacao(), []);
+  const { data: arrecadacaoRaw } = useApi(() => adminAPI.relatorioArrecadacao(), []);
   const { data: devedores } = useApi(() => adminAPI.relatorioDevedores(), []);
+  const arrecadacao = agruparArrecadacaoPorMes(arrecadacaoRaw);
 
   return (
     <div className="space-y-8">
       <h1 className="text-2xl font-bold text-gray-900">Visão Geral</h1>
 
       {/* ── Stats financeiras ─────────────────────────────────────────────── */}
+      {/* Cada moeda é somada à parte — AOA, EUR e USD não podem ser
+          combinadas num único total (ver adminController.getStats). */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
-          { label: 'Seminaristas Activos', value: stats?.total_seminaristas ?? '—', icon: Users, color: 'bg-blue-50 text-blue-600' },
-          { label: 'Total Arrecadado',     value: stats ? formatCurrency(stats.total_pago,    'AOA') : '—', icon: TrendingUp,   color: 'bg-wine-50 text-wine-600' },
-          { label: 'Total em Dívida',      value: stats ? formatCurrency(stats.total_devedor, 'AOA') : '—', icon: AlertTriangle, color: 'bg-amber-50 text-amber-600' },
-        ].map(({ label, value, icon: Icon, color }) => (
+          { label: 'Seminaristas Activos', values: [stats?.total_seminaristas ?? '—'], icon: Users, color: 'bg-blue-50 text-blue-600' },
+          { label: 'Total Arrecadado',     values: stats ? (formatCurrencyBreakdown(stats.total_pago_moeda).length ? formatCurrencyBreakdown(stats.total_pago_moeda) : [formatCurrency(0, 'AOA')]) : ['—'], icon: TrendingUp,   color: 'bg-wine-50 text-wine-600' },
+          { label: 'Total em Dívida',      values: stats ? (formatCurrencyBreakdown(stats.total_devedor_moeda).length ? formatCurrencyBreakdown(stats.total_devedor_moeda) : [formatCurrency(0, 'AOA')]) : ['—'], icon: AlertTriangle, color: 'bg-amber-50 text-amber-600' },
+        ].map(({ label, values, icon: Icon, color }) => (
           <div key={label} className="card flex items-center gap-4">
             <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${color}`}>
               <Icon size={24} />
             </div>
             <div>
-              <p className="text-2xl font-bold text-gray-900">{value}</p>
+              {values.map((v, i) => (
+                <p key={i} className={i === 0 ? 'text-2xl font-bold text-gray-900' : 'text-sm font-semibold text-gray-500'}>{v}</p>
+              ))}
               <p className="text-sm text-gray-500">{label}</p>
             </div>
           </div>
@@ -92,17 +97,13 @@ export default function AdminHome() {
             <p className="text-sm text-gray-500 py-4 text-center">Sem dados</p>
           ) : (
             <div className="space-y-2">
-              {arrecadacao.slice(0, 6).map(r => (
-                <div key={r.mes} className="flex items-center gap-3">
-                  <span className="text-xs text-gray-500 w-20 shrink-0">
-                    {new Date(r.mes).toLocaleDateString('pt-PT', { month: 'short', year: 'numeric' })}
+              {arrecadacao.slice(0, 6).map(g => (
+                <div key={g.mes} className="flex items-center justify-between gap-3">
+                  <span className="text-xs text-gray-500 shrink-0">
+                    {new Date(g.mes).toLocaleDateString('pt-PT', { month: 'short', year: 'numeric' })}
                   </span>
-                  <div className="flex-1 bg-gray-100 rounded-full h-2">
-                    <div className="bg-primary-600 h-2 rounded-full"
-                      style={{ width: `${Math.min(100, (r.total / (arrecadacao[0]?.total || 1)) * 100)}%` }} />
-                  </div>
-                  <span className="text-xs font-medium text-gray-700 w-24 text-right">
-                    {formatCurrency(r.total, 'AOA')}
+                  <span className="text-xs font-medium text-gray-700 text-right space-x-2">
+                    {g.moedas.map(m => <span key={m.moeda}>{formatCurrency(m.total, m.moeda)}</span>)}
                   </span>
                 </div>
               ))}

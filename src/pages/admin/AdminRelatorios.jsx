@@ -1,14 +1,23 @@
 import { useApi } from '../../hooks/useApi';
 import { adminAPI } from '../../api';
-import { formatCurrency, formatDate } from '../../utils/format';
+import { formatCurrency, formatCurrencyBreakdown, agruparArrecadacaoPorMes } from '../../utils/format';
 import { Link } from 'react-router-dom';
 
 export default function AdminRelatorios() {
-  const { data: arrecadacao } = useApi(() => adminAPI.relatorioArrecadacao(), []);
+  const { data: arrecadacaoRaw } = useApi(() => adminAPI.relatorioArrecadacao(), []);
   const { data: devedores } = useApi(() => adminAPI.relatorioDevedores(), []);
+  const arrecadacao = agruparArrecadacaoPorMes(arrecadacaoRaw);
 
-  const totalArrecadado = arrecadacao?.reduce((s, r) => s + parseFloat(r.total || 0), 0) || 0;
-  const totalDevedor = devedores?.reduce((s, d) => s + parseFloat(d.saldo_devedor || 0), 0) || 0;
+  // Somado por moeda — AOA, EUR e USD nunca podem ser combinados num único
+  // número (ver adminController.getStats/relatorioArrecadacao).
+  const totalArrecadadoPorMoeda = (arrecadacaoRaw || []).reduce((acc, r) => {
+    acc[r.moeda] = (acc[r.moeda] || 0) + (parseFloat(r.total) || 0);
+    return acc;
+  }, {});
+  const totalDevedorPorMoeda = (devedores || []).reduce((acc, d) => {
+    acc[d.moeda] = (acc[d.moeda] || 0) + (parseFloat(d.saldo_devedor) || 0);
+    return acc;
+  }, {});
 
   return (
     <div>
@@ -16,12 +25,20 @@ export default function AdminRelatorios() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div className="card">
-          <p className="text-sm text-gray-500 mb-1">Total Arrecadado (12 meses)</p>
-          <p className="text-3xl font-bold text-wine-700">{formatCurrency(totalArrecadado, 'AOA')}</p>
+          <p className="text-sm text-gray-500 mb-1">Total Arrecadado (últimos meses)</p>
+          {formatCurrencyBreakdown(totalArrecadadoPorMoeda).length ? (
+            formatCurrencyBreakdown(totalArrecadadoPorMoeda).map((v, i) => (
+              <p key={i} className={i === 0 ? 'text-3xl font-bold text-wine-700' : 'text-lg font-semibold text-wine-600'}>{v}</p>
+            ))
+          ) : <p className="text-3xl font-bold text-wine-700">{formatCurrency(0, 'AOA')}</p>}
         </div>
         <div className="card">
           <p className="text-sm text-gray-500 mb-1">Total em Dívida</p>
-          <p className="text-3xl font-bold text-red-600">{formatCurrency(totalDevedor, 'AOA')}</p>
+          {formatCurrencyBreakdown(totalDevedorPorMoeda).length ? (
+            formatCurrencyBreakdown(totalDevedorPorMoeda).map((v, i) => (
+              <p key={i} className={i === 0 ? 'text-3xl font-bold text-red-600' : 'text-lg font-semibold text-red-500'}>{v}</p>
+            ))
+          ) : <p className="text-3xl font-bold text-red-600">{formatCurrency(0, 'AOA')}</p>}
           <p className="text-xs text-gray-400 mt-1">{devedores?.length || 0} seminaristas com dívida</p>
         </div>
       </div>
@@ -37,11 +54,13 @@ export default function AdminRelatorios() {
                   <tr><th className="text-left py-2">Mês</th><th className="text-right py-2">Total</th><th className="text-right py-2">N.º Pag.</th></tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
-                  {arrecadacao.map(r => (
-                    <tr key={r.mes}>
-                      <td className="py-2">{new Date(r.mes).toLocaleDateString('pt-PT', { month: 'long', year: 'numeric' })}</td>
-                      <td className="py-2 text-right font-medium text-wine-700">{formatCurrency(r.total, 'AOA')}</td>
-                      <td className="py-2 text-right text-gray-500">{r.num_pagamentos}</td>
+                  {arrecadacao.map(g => (
+                    <tr key={g.mes}>
+                      <td className="py-2">{new Date(g.mes).toLocaleDateString('pt-PT', { month: 'long', year: 'numeric' })}</td>
+                      <td className="py-2 text-right font-medium text-wine-700 space-x-2">
+                        {g.moedas.map(m => <span key={m.moeda}>{formatCurrency(m.total, m.moeda)}</span>)}
+                      </td>
+                      <td className="py-2 text-right text-gray-500">{g.num_pagamentos}</td>
                     </tr>
                   ))}
                 </tbody>

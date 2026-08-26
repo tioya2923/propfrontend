@@ -6,6 +6,32 @@ export function formatCurrency(value, moeda = 'AOA') {
   }).format(value);
 }
 
+// Recebe { AOA: 123, EUR: 0, USD: 45 } e devolve só as linhas com valor,
+// já formatadas — usado nos totais financeiros do admin para não somar
+// moedas diferentes como se fossem a mesma (ver adminController.getStats).
+export function formatCurrencyBreakdown(porMoeda) {
+  if (!porMoeda) return [];
+  return Object.entries(porMoeda)
+    .filter(([, v]) => v)
+    .map(([moeda, v]) => formatCurrency(v, moeda));
+}
+
+// adminAPI.relatorioArrecadacao() devolve uma linha por mês+moeda (ver
+// adminController.relatorioArrecadacao). Agrupa por mês para exibição,
+// mantendo os totais de cada moeda separados dentro de cada mês.
+export function agruparArrecadacaoPorMes(linhas) {
+  if (!linhas?.length) return [];
+  const porMes = new Map();
+  for (const r of linhas) {
+    const key = r.mes;
+    if (!porMes.has(key)) porMes.set(key, { mes: key, moedas: [], num_pagamentos: 0 });
+    const g = porMes.get(key);
+    g.moedas.push({ moeda: r.moeda, total: parseFloat(r.total) || 0 });
+    g.num_pagamentos += parseInt(r.num_pagamentos, 10) || 0;
+  }
+  return [...porMes.values()].sort((a, b) => new Date(b.mes) - new Date(a.mes));
+}
+
 export function formatDate(date) {
   if (!date) return '—';
   return new Date(date).toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' });
