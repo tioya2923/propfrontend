@@ -129,6 +129,53 @@ function HeroSlider({ noticias, subtituloFallback, tituloFallback, imagensFallba
   );
 }
 
+/* ── Notícias (versão compacta, para ficar lado-a-lado com Testemunhos) ────── */
+function NoticiasCard({ noticias }) {
+  const [cur, setCur] = useState(0);
+
+  useEffect(() => {
+    if (noticias.length <= 1) return;
+    const t = setInterval(() => setCur(i => (i === noticias.length - 1 ? 0 : i + 1)), 6000);
+    return () => clearInterval(t);
+  }, [noticias.length]);
+
+  const prev = e => { e.stopPropagation(); setCur(i => (i === 0 ? noticias.length - 1 : i - 1)); };
+  const next = e => { e.stopPropagation(); setCur(i => (i === noticias.length - 1 ? 0 : i + 1)); };
+  const n = noticias[cur];
+  const href = n ? `/noticias/${n.slug || n.id}` : '/noticias';
+
+  return (
+    <div className="relative group bg-white overflow-hidden border border-gray-100 min-h-[300px] md:min-h-[440px]">
+      <Link to={href} className="absolute inset-0 z-0" tabIndex={-1} aria-hidden="true" />
+
+      {n?.imagem_url
+        ? <img src={n.imagem_url} alt={n.titulo} loading="lazy" decoding="async"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 will-change-transform" />
+        : <div className="absolute inset-0 bg-gray-100" />}
+
+      <div className="absolute top-0 left-0 bg-primary-700 px-5 py-2.5 z-10">
+        <span className="text-white font-bold text-xs tracking-widest uppercase">Notícias</span>
+      </div>
+
+      {noticias.length > 1 && (
+        <>
+          <button onClick={prev}
+            className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-primary-700 text-white p-2 z-20 opacity-0 group-hover:opacity-100 transition-all"
+            aria-label="Anterior"><ChevronLeft size={20} /></button>
+          <button onClick={next}
+            className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-primary-700 text-white p-2 z-20 opacity-0 group-hover:opacity-100 transition-all"
+            aria-label="Seguinte"><ChevronRight size={20} /></button>
+        </>
+      )}
+
+      <Link to={href}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 w-3/4 sm:w-1/2 lg:w-2/5 xl:w-1/4 bg-primary-700/70 hover:bg-primary-700/90 transition-colors px-4 py-3 z-10 block text-center backdrop-blur-sm">
+        <p className="text-white font-semibold text-sm">{n ? n.titulo : 'Últimas notícias'}</p>
+      </Link>
+    </div>
+  );
+}
+
 /* ── Testimonials Slider ───────────────────────────────────────────────────── */
 function TestemunhosSlider() {
   const [list, setList] = useState([]);
@@ -262,8 +309,11 @@ export default function Home() {
 
       <Div />
 
-      {/* ── 3. Testemunhos ────────────────────────────────────────────────── */}
-      <TestemunhosSlider />
+      {/* ── 3. Notícias + Testemunhos ────────────────────────────────────── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-gray-200">
+        <NoticiasCard noticias={noticias} />
+        <TestemunhosSlider />
+      </div>
 
       <Div />
 
