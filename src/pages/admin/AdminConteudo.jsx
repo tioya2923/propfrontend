@@ -3,6 +3,7 @@ import { adminAPI } from '../../api';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import { Save, Plus, Trash2, ChevronDown, ChevronUp, Upload, X, Lock, Edit2, Check } from 'lucide-react';
+import { resolveAssetUrl } from '../../utils/format';
 
 // ── Upload / URL de imagem ─────────────────────────────────────────────────────
 function ImagemUpload({ label, value, onChange, hint }) {
@@ -20,7 +21,7 @@ function ImagemUpload({ label, value, onChange, hint }) {
     setUploading(true);
     try {
       const r = await adminAPI.uploadImagem(file);
-      onChange(r.data.url);
+      onChange(resolveAssetUrl(r.data.url));
       toast.success('Imagem carregada');
     } catch {
       toast.error('Erro ao carregar imagem');

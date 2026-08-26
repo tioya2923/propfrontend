@@ -1,10 +1,9 @@
 import { useEffect, useState, useRef } from 'react';
 import { Upload, Trash2, FileDown } from 'lucide-react';
 import { professorAPI } from '../../api';
-import { MATERIAL_TIPO_LABEL } from '../../utils/format';
+import { MATERIAL_TIPO_LABEL, resolveAssetUrl } from '../../utils/format';
 import toast from 'react-hot-toast';
 
-const BACKEND = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/api$/, '');
 const TIPOS = ['outro', 'apostila', 'exercicio', 'leitura', 'apresentacao'];
 
 export default function ProfessorMateriais() {
@@ -97,7 +96,7 @@ export default function ProfessorMateriais() {
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 {m.ficheiro_url && (
-                  <a href={`${BACKEND}${m.ficheiro_url}`} target="_blank" rel="noreferrer"
+                  <a href={resolveAssetUrl(m.ficheiro_url)} target="_blank" rel="noreferrer"
                     className="p-1.5 rounded text-primary-600 hover:bg-primary-50" title="Descarregar">
                     <FileDown size={16} />
                   </a>

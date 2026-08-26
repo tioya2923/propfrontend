@@ -1,10 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { adminAPI } from '../../api';
 import { Upload, Trash2, FileDown, FileText, BookOpen, Presentation } from 'lucide-react';
-import { formatDate, MATERIAL_TIPO_LABEL } from '../../utils/format';
+import { formatDate, MATERIAL_TIPO_LABEL, resolveAssetUrl } from '../../utils/format';
 import toast from 'react-hot-toast';
 
-const BACKEND = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/api$/, '');
 const ICON = { documento: FileText, livro: BookOpen, apresentacao: Presentation };
 
 export default function AdminMateriais() {
@@ -115,7 +114,7 @@ export default function AdminMateriais() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
-                    <a href={`${BACKEND}${m.ficheiro_url}`} target="_blank" rel="noreferrer"
+                    <a href={resolveAssetUrl(m.ficheiro_url)} target="_blank" rel="noreferrer"
                       className="p-1.5 rounded text-primary-600 hover:bg-primary-100" title="Descarregar">
                       <FileDown size={16} />
                     </a>

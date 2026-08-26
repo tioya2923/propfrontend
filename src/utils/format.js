@@ -42,6 +42,20 @@ export function formatDateTime(date) {
   return new Date(date).toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 
+// Origem do backend (sem o "/api" final), para montar URLs absolutos a
+// partir de caminhos relativos como "/uploads/xxx.png".
+export const BACKEND_ORIGIN = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/api$/, '');
+
+// Ficheiros carregados antes de existir o Cloudinary ficaram guardados como
+// caminho relativo ("/uploads/xxx.png") e precisam do backend à frente para
+// dar um URL válido. Os carregados depois já vêm do Cloudinary como URL
+// absoluto (https://res.cloudinary.com/...) e NÃO podem levar o backend à
+// frente outra vez, ou o URL fica duplicado e partido.
+export function resolveAssetUrl(url) {
+  if (!url) return url;
+  return /^https?:\/\//.test(url) ? url : `${BACKEND_ORIGIN}${url}`;
+}
+
 export const DIAS_SEMANA = {
   segunda: 'Segunda-feira', terca: 'Terça-feira', quarta: 'Quarta-feira',
   quinta: 'Quinta-feira', sexta: 'Sexta-feira', sabado: 'Sábado',

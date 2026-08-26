@@ -2,10 +2,9 @@ import { useState, useRef } from 'react';
 import { adminAPI } from '../../api';
 import { useApi } from '../../hooks/useApi';
 import { Plus, Edit2, Trash2, Eye, EyeOff, X, ImagePlus } from 'lucide-react';
-import { formatDate } from '../../utils/format';
+import { formatDate, resolveAssetUrl } from '../../utils/format';
 import toast from 'react-hot-toast';
 
-const BACKEND = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/api$/, '');
 const CATEGORIAS = ['geral', 'eventos', 'academico', 'formacao', 'comunidade', 'vocacao'];
 const CATEGORIA_LABEL = {
   geral: 'Geral', eventos: 'Eventos', academico: 'Académico',
@@ -23,7 +22,7 @@ function ImageUpload({ value, onChange }) {
     setUploading(true);
     try {
       const r = await adminAPI.uploadImagem(file);
-      onChange(BACKEND + r.data.url);
+      onChange(resolveAssetUrl(r.data.url));
       toast.success('Imagem carregada');
     } catch { toast.error('Erro ao carregar imagem'); }
     finally { setUploading(false); ref.current.value = ''; }
