@@ -74,7 +74,7 @@ export default function ProfessorMateriais() {
             </div>
             <div>
               <label className="label">Ano de Formação</label>
-              <input type="number" className="input" placeholder="Todos" min="1" max="6" value={form.ano_formacao} onChange={e => setForm(f => ({ ...f, ano_formacao: e.target.value }))} />
+              <input type="number" className="input" placeholder="Todos" min="1" max="3" value={form.ano_formacao} onChange={e => setForm(f => ({ ...f, ano_formacao: e.target.value }))} />
             </div>
           </div>
           <input className="input" placeholder="Descrição" value={form.descricao} onChange={e => setForm(f => ({ ...f, descricao: e.target.value }))} />

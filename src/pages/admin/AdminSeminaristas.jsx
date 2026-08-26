@@ -24,7 +24,7 @@ const COR_CLASSES = {
 };
 
 // Anos de formação do propedêutico
-const ANOS_FORMACAO = [1, 2];
+const ANOS_FORMACAO = [1, 2, 3];
 
 // Normaliza o cargo de um utilizador (para lidar com registos antigos sem cargo)
 function cargoEfetivo(u) {

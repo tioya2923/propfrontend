@@ -10,6 +10,7 @@ const DEFAULTS = {
   curriculo: [
     { ano: '1.º Ano', disciplinas: ['Filosofia Introdutória', 'Sagrada Escritura', 'Latim I', 'Português e Comunicação', 'História da Igreja I', 'Introdução às Ciências da Religião'] },
     { ano: '2.º Ano', disciplinas: ['Introdução à Teologia', 'Psicologia e Desenvolvimento Humano', 'Latim II', 'Filosofia da Religião', 'História da Igreja II', 'Pastoral e Missionação'] },
+    { ano: '3.º Ano', disciplinas: ['Doutrina Social da Igreja', 'Liturgia', 'Ética', 'Latim III', 'Metodologia do Estudo', 'Estágio Pastoral'] },
   ],
   horario_tipico: [
     { hora: '06:00', atividade: 'Laudes e Oração Pessoal', tipo: 'espiritual' },
@@ -55,7 +56,7 @@ export default function Formacao() {
           <p className="text-primary-300 text-sm uppercase tracking-widest mb-4">Curriculum</p>
           <h1 className="text-5xl font-serif font-bold mb-6">Formação</h1>
           <p className="text-xl text-gray-300 leading-relaxed">
-            Dois anos de formação integral que preparam os candidatos ao sacerdócio nos seus fundamentos humanos, espirituais e intelectuais.
+            Três anos de formação integral que preparam os candidatos ao sacerdócio nos seus fundamentos humanos, espirituais e intelectuais.
           </p>
         </div>
       </section>

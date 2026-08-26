@@ -74,7 +74,7 @@ export default function AdminMateriais() {
             <div><label className="label">Ano de Formação (opcional)</label>
               <select value={form.ano_formacao} onChange={set('ano_formacao')} className="input">
                 <option value="">Todos os anos</option>
-                {[1, 2].map(n => <option key={n} value={n}>{n}º Ano</option>)}
+                {[1, 2, 3].map(n => <option key={n} value={n}>{n}º Ano</option>)}
               </select>
             </div>
           </div>

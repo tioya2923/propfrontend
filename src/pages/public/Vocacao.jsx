@@ -11,7 +11,7 @@ const DEFAULT_TESTEMUNHOS = [
 const DEFAULT_FAQS = [
   { q: 'Como sei se tenho vocação sacerdotal?', a: 'A vocação manifesta-se através de um desejo persistente de servir a Deus e à Igreja, amor pela Eucaristia e pelos sacramentos, e o desejo de acompanhar espiritualmente as pessoas. Fala com o teu pároco ou um sacerdote de confiança.' },
   { q: 'Que requisitos são necessários para entrar no Seminário?', a: 'É necessário ser do sexo masculino, católico praticante, ter concluído o ensino secundário, ter boa saúde física e psicológica, e apresentar carta de recomendação do pároco.' },
-  { q: 'Quantos anos dura a formação?', a: 'A formação propedêutica dura 2 anos, após os quais o seminarista prossegue para a Filosofia e depois a Teologia, num percurso total de formação para o sacerdócio.' },
+  { q: 'Quantos anos dura a formação?', a: 'A formação propedêutica dura 3 anos, após os quais o seminarista prossegue para a Filosofia e depois a Teologia, num percurso total de formação para o sacerdócio.' },
   { q: 'Posso visitar o Seminário antes de me candidatar?', a: 'Sim! Organizamos fins-de-semana vocacionais e dias abertos. Entre em contacto connosco para agendar uma visita.' },
   { q: 'Como se faz a candidatura?', a: 'A candidatura é feita através do formulário disponível na diocese ou directamente no Seminário, entre Junho e Agosto de cada ano.' },
 ];

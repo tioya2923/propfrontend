@@ -43,7 +43,7 @@ export const TIPOS_UTILIZADOR = [
 ];
 
 // Anos de formação do curso propedêutico
-export const ANOS_FORMACAO = [1, 2];
+export const ANOS_FORMACAO = [1, 2, 3];
 
 // Legacy aliases kept for backward compatibility with any existing data
 export const SECCAO_LABEL = {};

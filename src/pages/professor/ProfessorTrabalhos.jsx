@@ -102,7 +102,7 @@ export default function ProfessorTrabalhos() {
               </div>
               <div>
                 <label className="label">Ano de Formação</label>
-                <input type="number" className="input" placeholder="Todos" min="1" max="6" value={form.ano_formacao} onChange={e => set('ano_formacao', e.target.value)} />
+                <input type="number" className="input" placeholder="Todos" min="1" max="3" value={form.ano_formacao} onChange={e => set('ano_formacao', e.target.value)} />
               </div>
             </div>
             <input className="input" placeholder="Matéria" value={form.materia} onChange={e => set('materia', e.target.value)} />

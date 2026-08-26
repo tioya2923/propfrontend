@@ -19,7 +19,7 @@ const DEFAULTS = {
   ],
   stats: [
     { valor: '14', desc: 'Seminaristas' },
-    { valor: '2', desc: 'Anos de formação' },
+    { valor: '3', desc: 'Anos de formação' },
     { valor: '3', desc: 'Membros da Direcção' },
   ],
   historia: [
@@ -84,7 +84,7 @@ export default function Seminario() {
       <section className="py-12 bg-white border-b border-primary-100">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-primary-800 text-base leading-relaxed">
-            O <strong>Seminário Propedêutico São João Evangelista</strong> é uma instituição da <strong>Arquidiocese do Huambo</strong> dedicada à formação inicial de candidatos ao sacerdócio. Durante os dois anos propedêuticos, os seminaristas desenvolvem as bases humanas, espirituais e intelectuais necessárias para o seu percurso vocacional.
+            O <strong>Seminário Propedêutico São João Evangelista</strong> é uma instituição da <strong>Arquidiocese do Huambo</strong> dedicada à formação inicial de candidatos ao sacerdócio. Durante os três anos propedêuticos, os seminaristas desenvolvem as bases humanas, espirituais e intelectuais necessárias para o seu percurso vocacional.
           </p>
         </div>
       </section>
@@ -155,7 +155,7 @@ export default function Seminario() {
               )}
             </div>
             <div className="card">
-              <h4 className="font-semibold text-gray-900 mb-4">Disciplinas (2 anos)</h4>
+              <h4 className="font-semibold text-gray-900 mb-4">Disciplinas (3 anos)</h4>
               <ul className="space-y-1.5">
                 {disciplinas.map((d, i) => (
                   <li key={i} className="flex items-center gap-2 text-sm text-gray-700">
