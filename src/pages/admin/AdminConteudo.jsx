@@ -673,7 +673,6 @@ export default function AdminConteudo() {
               <ListaObjEditor
                 items={Array.isArray(data.dimensoes) ? data.dimensoes : []}
                 campos={[
-                  { key: 'emoji', label: 'Ícone (emoji)', placeholder: '❤️' },
                   { key: 'titulo', label: 'Título', placeholder: 'Formação Humana' },
                   { key: 'desc', label: 'Descrição', multiline: true },
                 ]}

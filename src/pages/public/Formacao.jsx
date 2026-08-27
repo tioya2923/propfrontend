@@ -2,10 +2,10 @@ import { useConteudo } from '../../hooks/useConteudo';
 
 const DEFAULTS = {
   dimensoes: [
-    { emoji: '❤️', titulo: 'Formação Humana', desc: 'Desenvolvimento da personalidade, maturidade afectiva, liberdade e responsabilidade.' },
-    { emoji: '🕊️', titulo: 'Formação Espiritual', desc: 'Vida de oração, sacramentos, lectio divina, direcção espiritual e retiros.' },
-    { emoji: '📖', titulo: 'Formação Intelectual', desc: 'Filosofia introdutória, Escritura, História da Igreja e Introdução à Teologia.' },
-    { emoji: '✝️', titulo: 'Formação Pastoral', desc: 'Estágios paroquiais, catequese, animação litúrgica e serviço aos mais pobres.' },
+    { titulo: 'Formação Humana', desc: 'Desenvolvimento da personalidade, maturidade afectiva, liberdade e responsabilidade.' },
+    { titulo: 'Formação Espiritual', desc: 'Vida de oração, sacramentos, lectio divina, direcção espiritual e retiros.' },
+    { titulo: 'Formação Intelectual', desc: 'Filosofia introdutória, Escritura, História da Igreja e Introdução à Teologia.' },
+    { titulo: 'Formação Pastoral', desc: 'Estágios paroquiais, catequese, animação litúrgica e serviço aos mais pobres.' },
   ],
   curriculo: [
     { ano: '1.º Ano', disciplinas: ['Filosofia Introdutória', 'Sagrada Escritura', 'Latim I', 'Português e Comunicação', 'História da Igreja I', 'Introdução às Ciências da Religião'] },
@@ -69,7 +69,6 @@ export default function Formacao() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {dimensoes.map((l, i) => (
               <div key={i} className="card text-center">
-                <div className="text-4xl mb-4">{l.emoji}</div>
                 <h3 className="font-semibold text-gray-900 mb-3">{l.titulo}</h3>
                 <p className="text-sm text-gray-600 leading-relaxed">{l.desc}</p>
               </div>
