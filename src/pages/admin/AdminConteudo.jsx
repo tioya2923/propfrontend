@@ -515,10 +515,11 @@ export default function AdminConteudo() {
         return (
           <div className="space-y-4 max-w-2xl">
             <p className="text-sm text-gray-500">
-              Estas formas de pagamento aparecem ao seminarista quando gera um pedido de pagamento de propina em Kwanza (AOA).
-              Preenche só os campos relevantes para cada forma — por exemplo, para Multicaixa Express só faz sentido o telefone,
-              para uma transferência bancária só fazem sentido o banco/IBAN. Sem pelo menos uma forma configurada aqui, o
-              seminarista não vai saber como pagar.
+              Estas formas de pagamento aparecem ao seminarista quando gera um pedido de pagamento de propina em Kwanza (AOA),
+              e também na página pública "Como Ajudar" quando alguém faz um donativo por MCX Express ou MBWay sem cartão
+              disponível — é a mesma conta do Seminário nos dois casos. Preenche só os campos relevantes para cada forma —
+              por exemplo, para Multicaixa Express/MBWay só faz sentido o telefone, para uma transferência bancária só fazem
+              sentido o banco/IBAN. Sem pelo menos uma forma configurada aqui, ninguém vai saber como pagar.
             </p>
             <ListaObjEditor
               items={Array.isArray(data.metodos_pagamento) ? data.metodos_pagamento : []}

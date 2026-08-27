@@ -22,10 +22,45 @@ const METODOS = [
 const VALORES_AOA = [5000, 10000, 25000, 50000];
 const VALORES_EUR = [5, 10, 25, 50];
 
-const MBWAY_NUMERO = '920 124 925';
-
+// Mostra as formas de pagamento reais configuradas pela administração (as
+// mesmas usadas nas Propinas — a conta bancária do Seminário é a mesma para
+// donativos e propinas), com o código interno para referência na descrição.
+function FormasPagamentoReais({ metodos, referencia }) {
+  return (
+    <>
+      {referencia && (
+        <div className="bg-gray-100 rounded-xl py-3 px-6 mb-4">
+          <p className="text-xs text-gray-500 mb-1">Código de referência (indique na descrição do pagamento):</p>
+          <p className="text-xl font-mono font-bold text-primary-700 tracking-widest">{referencia}</p>
+        </div>
+      )}
+      {metodos.length > 0 ? (
+        <div className="space-y-3 text-left">
+          {metodos.map((m, i) => (
+            <div key={i} className="bg-white border border-gray-200 rounded-lg p-3">
+              <p className="font-semibold text-gray-900 text-sm mb-1">{m.nome}</p>
+              <dl className="text-xs text-gray-600 space-y-0.5">
+                {m.titular && <div><dt className="inline font-medium">Titular: </dt><dd className="inline">{m.titular}</dd></div>}
+                {m.banco && <div><dt className="inline font-medium">Banco: </dt><dd className="inline">{m.banco}</dd></div>}
+                {m.iban && <div><dt className="inline font-medium">IBAN: </dt><dd className="inline font-mono">{m.iban}</dd></div>}
+                {m.numero_conta && <div><dt className="inline font-medium">Nº de conta: </dt><dd className="inline">{m.numero_conta}</dd></div>}
+                {m.telefone && <div><dt className="inline font-medium">Telefone: </dt><dd className="inline">{m.telefone}</dd></div>}
+              </dl>
+              {m.instrucoes && <p className="text-xs text-gray-500 mt-1 whitespace-pre-wrap">{m.instrucoes}</p>}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+          A administração ainda não configurou nenhuma forma de pagamento. Contacte-nos directamente para saber como proceder.
+        </p>
+      )}
+    </>
+  );
+}
 
 function DonatePage() {
+  const { metodos_pagamento: metodos = [] } = useConteudo('propinas', { metodos_pagamento: [] });
   const [metodo, setMetodo] = useState('mcx');
   const [valor, setValor] = useState('');
   const [nome, setNome] = useState('');
@@ -84,17 +119,9 @@ function DonatePage() {
   if (sucesso?.referencia) return (
     <div id="donativo" className="card max-w-md mx-auto text-center py-8">
       <h3 className="text-xl font-semibold mb-2 text-gray-900">Pedido registado!</h3>
-      <p className="text-gray-600 mb-4">Use a referência abaixo para concluir o pagamento via MCX Express:</p>
-      <div className="bg-gray-100 rounded-xl py-4 px-6 text-3xl font-mono font-bold text-primary-700 tracking-widest mb-4">
-        {sucesso.referencia}
-      </div>
-      <ol className="text-sm text-gray-600 text-left space-y-1 mb-6 list-decimal list-inside">
-        <li>Marque <strong>*222#</strong> no seu telemóvel</li>
-        <li>Seleccione <strong>Pagamentos → Por Referência</strong></li>
-        <li>Insira a referência <strong>{sucesso.referencia}</strong></li>
-        <li>Confirme o valor e conclua o pagamento</li>
-      </ol>
-      <button onClick={() => setSucesso(null)} className="btn-secondary text-sm">Fazer outro donativo</button>
+      <p className="text-gray-600 mb-4">A nossa equipa foi notificada. Conclua o pagamento por uma das formas abaixo:</p>
+      <FormasPagamentoReais metodos={metodos} referencia={sucesso.referencia} />
+      <button onClick={() => setSucesso(null)} className="btn-secondary text-sm mt-6">Fazer outro donativo</button>
     </div>
   );
 
@@ -110,13 +137,11 @@ function DonatePage() {
     <div id="donativo" className="card max-w-md mx-auto text-center py-8">
       <h3 className="text-xl font-semibold mb-3 text-gray-900">Pedido recebido!</h3>
       <p className="text-gray-600 mb-4">
-        Envie o valor para o número MBWay do Seminário e indique o seu nome na descrição:
+        O pagamento automático por MBWay não está disponível de momento. A nossa equipa foi notificada — pode
+        concluir o donativo por uma das formas abaixo, indicando o seu nome:
       </p>
-      <div className="bg-gray-100 rounded-xl py-4 px-6 text-2xl font-bold text-primary-700 mb-2">
-        {MBWAY_NUMERO}
-      </div>
-      <p className="text-xs text-gray-400 mb-6">+351 {MBWAY_NUMERO}</p>
-      <button onClick={() => setSucesso(null)} className="btn-secondary text-sm">Voltar</button>
+      <FormasPagamentoReais metodos={metodos} />
+      <button onClick={() => setSucesso(null)} className="btn-secondary text-sm mt-6">Voltar</button>
     </div>
   );
 
