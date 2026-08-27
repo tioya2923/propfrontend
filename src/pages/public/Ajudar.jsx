@@ -233,12 +233,11 @@ export default function Ajudar() {
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             {[
-              { emoji: '💝', titulo: 'Donativos', desc: 'Apoie a missão formativa com uma contribuição livre, única ou mensal.', href: '#donativo' },
-              { emoji: '🤝', titulo: 'Apadrinhamento', desc: 'Apadrinhe um seminarista e acompanhe a sua jornada vocacional de perto.', href: '#apadrinhamento' },
-              { emoji: '🙏', titulo: 'Pedido de Oração', desc: 'Os nossos seminaristas rezam por si e pelas suas intenções. Envie o seu pedido.', href: '#oracao' },
+              { titulo: 'Donativos', desc: 'Apoie a missão formativa com uma contribuição livre, única ou mensal.', href: '#donativo' },
+              { titulo: 'Apadrinhamento', desc: 'Apadrinhe um seminarista e acompanhe a sua jornada vocacional de perto.', href: '#apadrinhamento' },
+              { titulo: 'Pedido de Oração', desc: 'Os nossos seminaristas rezam por si e pelas suas intenções. Envie o seu pedido.', href: '#oracao' },
             ].map(o => (
               <a key={o.titulo} href={o.href} className="card text-center block hover:shadow-md hover:-translate-y-1 transition-all duration-200 cursor-pointer">
-                <div className="text-5xl mb-4">{o.emoji}</div>
                 <h3 className="font-semibold text-xl mb-3 text-gray-900">{o.titulo}</h3>
                 <p className="text-gray-600 text-sm leading-relaxed">{o.desc}</p>
               </a>
