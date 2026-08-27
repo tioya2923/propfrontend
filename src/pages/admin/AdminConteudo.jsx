@@ -320,6 +320,7 @@ const TABS = [
   { id: 'homepage', label: 'Página Inicial' },
   { id: 'contactos', label: 'Contactos' },
   { id: 'ajudar', label: 'Como Ajudar' },
+  { id: 'propinas', label: 'Propinas — Formas de Pagamento' },
   { id: 'seminario', label: 'Seminário' },
   { id: 'vocacao', label: 'Deus Chama-me?' },
   { id: 'comunidade', label: 'Comunidade' },
@@ -505,6 +506,35 @@ export default function AdminConteudo() {
               { chave: 'email_apadrinhamento', valor: data.email_apadrinhamento, tipo: 'text' },
               { chave: 'email_oracao', valor: data.email_oracao, tipo: 'text' },
               { chave: 'oracao_texto', valor: data.oracao_texto, tipo: 'text' },
+            ]} />
+          </div>
+        );
+
+      // ── Propinas — Formas de Pagamento ───────────────────────────────────────
+      case 'propinas':
+        return (
+          <div className="space-y-4 max-w-2xl">
+            <p className="text-sm text-gray-500">
+              Estas formas de pagamento aparecem ao seminarista quando gera um pedido de pagamento de propina em Kwanza (AOA).
+              Preenche só os campos relevantes para cada forma — por exemplo, para Multicaixa Express só faz sentido o telefone,
+              para uma transferência bancária só fazem sentido o banco/IBAN. Sem pelo menos uma forma configurada aqui, o
+              seminarista não vai saber como pagar.
+            </p>
+            <ListaObjEditor
+              items={Array.isArray(data.metodos_pagamento) ? data.metodos_pagamento : []}
+              campos={[
+                { key: 'nome', label: 'Nome (ex: Transferência Bancária BAI, Multicaixa Express)', placeholder: 'Transferência Bancária' },
+                { key: 'titular', label: 'Titular da conta', placeholder: 'Seminário Propedêutico São João Evangelista' },
+                { key: 'banco', label: 'Banco (se aplicável)', placeholder: 'Banco BAI' },
+                { key: 'iban', label: 'IBAN / NIB (se aplicável)', placeholder: 'AO06 0000 0000 0000 0000 0000 0' },
+                { key: 'numero_conta', label: 'Número de conta (se diferente do IBAN)' },
+                { key: 'telefone', label: 'Telefone (Multicaixa Express ou outro)', placeholder: '9XX XXX XXX' },
+                { key: 'instrucoes', label: 'Instruções adicionais (opcional)', multiline: true },
+              ]}
+              onChange={set('metodos_pagamento')}
+            />
+            <SaveBtn campos={[
+              { chave: 'metodos_pagamento', valor: data.metodos_pagamento, tipo: 'json' },
             ]} />
           </div>
         );

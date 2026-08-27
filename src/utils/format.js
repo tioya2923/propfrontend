@@ -101,5 +101,5 @@ export const MATERIAL_TIPO_LABEL = {
 };
 
 export const PAGAMENTO_METODO_LABEL = {
-  cartao: 'Cartão', multibanco: 'Multibanco', transferencia: 'Transferência',
+  cartao: 'Cartão', multibanco: 'Transferência/Depósito', transferencia: 'Transferência',
 };

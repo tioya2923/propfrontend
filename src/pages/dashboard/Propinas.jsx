@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { propinaAPI, publicAPI } from '../../api';
 import { useApi } from '../../hooks/useApi';
+import { useConteudo } from '../../hooks/useConteudo';
 import { formatCurrency, formatDate, PAGAMENTO_METODO_LABEL } from '../../utils/format';
 import { Download, AlertCircle, CheckCircle2, CreditCard, Landmark } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -8,6 +9,7 @@ import StripeCheckoutModal, { stripePromise } from '../../components/ui/StripeCh
 
 export default function Propinas() {
   const { data: divida, loading, error, reload } = useApi(() => propinaAPI.getMinhaDivida(), []);
+  const { metodos_pagamento: metodos = [] } = useConteudo('propinas', { metodos_pagamento: [] });
   const [paying, setPaying] = useState(false);
   const [prorrogacao, setProrrogacao] = useState(false);
   const [motivo, setMotivo] = useState('');
@@ -133,15 +135,40 @@ export default function Propinas() {
             </div>
           )}
 
-          {/* Referência Multibanco gerada */}
+          {/* Código de referência gerado + formas de pagamento configuradas pela administração */}
           {referencia && (
             <div className="mt-4 bg-primary-50 border border-primary-200 rounded-xl p-4">
-              <p className="text-sm text-primary-800 mb-1">Referência gerada para pagamento via Multibanco:</p>
+              <p className="text-sm text-primary-800 mb-1">Pedido de pagamento registado. Código de referência:</p>
               <p className="text-2xl font-mono font-bold text-primary-700 tracking-widest">{referencia}</p>
-              <p className="text-xs text-gray-500 mt-2">
-                Efectue o pagamento no Multibanco/ATM ou Internet Banking. O saldo é actualizado assim que a administração confirmar a transferência.
+              <p className="text-xs text-gray-500 mt-2 mb-4">
+                Efectue o pagamento por uma das formas abaixo e indique este código na descrição/referência da
+                operação, para a administração confirmar mais depressa. O saldo é actualizado assim que a
+                administração confirmar o pagamento.
               </p>
-              <button onClick={() => setReferencia(null)} className="text-xs text-gray-500 hover:underline mt-2">Fechar</button>
+
+              {metodos.length > 0 ? (
+                <div className="space-y-3">
+                  {metodos.map((m, i) => (
+                    <div key={i} className="bg-white border border-primary-100 rounded-lg p-3">
+                      <p className="font-semibold text-gray-900 text-sm mb-1">{m.nome}</p>
+                      <dl className="text-xs text-gray-600 space-y-0.5">
+                        {m.titular && <div><dt className="inline font-medium">Titular: </dt><dd className="inline">{m.titular}</dd></div>}
+                        {m.banco && <div><dt className="inline font-medium">Banco: </dt><dd className="inline">{m.banco}</dd></div>}
+                        {m.iban && <div><dt className="inline font-medium">IBAN: </dt><dd className="inline font-mono">{m.iban}</dd></div>}
+                        {m.numero_conta && <div><dt className="inline font-medium">Nº de conta: </dt><dd className="inline">{m.numero_conta}</dd></div>}
+                        {m.telefone && <div><dt className="inline font-medium">Telefone: </dt><dd className="inline">{m.telefone}</dd></div>}
+                      </dl>
+                      {m.instrucoes && <p className="text-xs text-gray-500 mt-1 whitespace-pre-wrap">{m.instrucoes}</p>}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                  A administração ainda não configurou nenhuma forma de pagamento. Contacte-a directamente para saber como proceder.
+                </p>
+              )}
+
+              <button onClick={() => setReferencia(null)} className="text-xs text-gray-500 hover:underline mt-3">Fechar</button>
             </div>
           )}
         </div>
