@@ -62,7 +62,7 @@ function HeroSlider({ subtituloFallback, tituloFallback, imagensFallback }) {
           alt=""
           fetchpriority={i === 0 ? 'high' : 'low'}
           decoding="async"
-          className={`absolute inset-0 w-full h-full object-cover object-top transition-opacity duration-1000 ${i === slide ? 'opacity-100' : 'opacity-0'}`}
+          className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-1000 ${i === slide ? 'opacity-100' : 'opacity-0'}`}
         />
       ))}
       <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/35 to-black/10" />
@@ -110,12 +110,12 @@ function NoticiasCard({ noticias }) {
   const href = n ? `/noticias/${n.slug || n.id}` : '/noticias';
 
   return (
-    <div className="relative group bg-white overflow-hidden border border-gray-100 min-h-[300px] md:min-h-[440px]">
+    <div className="relative group bg-gray-100 overflow-hidden border border-gray-100 min-h-[300px] md:min-h-[440px]">
       <Link to={href} className="absolute inset-0 z-0" tabIndex={-1} aria-hidden="true" />
 
       {n?.imagem_url
         ? <img src={n.imagem_url} alt={n.titulo} loading="lazy" decoding="async"
-            className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105 will-change-transform" />
+            className="absolute inset-0 w-full h-full object-contain transition-transform duration-700 group-hover:scale-105 will-change-transform" />
         : <div className="absolute inset-0 bg-gray-100" />}
 
       <div className="absolute top-0 left-0 bg-primary-700 px-5 py-2.5 z-10">
@@ -163,12 +163,12 @@ function TestemunhosSlider() {
   const t = list[cur];
 
   return (
-    <div className="relative group bg-white overflow-hidden border border-gray-100 min-h-[300px] md:min-h-[440px]">
+    <div className="relative group bg-gray-100 overflow-hidden border border-gray-100 min-h-[300px] md:min-h-[440px]">
       <Link to="/vocacao" className="absolute inset-0 z-0" tabIndex={-1} aria-hidden="true" />
 
       {t?.foto_url
         ? <img src={t.foto_url} alt={t.nome} loading="lazy" decoding="async"
-            className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105 will-change-transform" />
+            className="absolute inset-0 w-full h-full object-contain transition-transform duration-700 group-hover:scale-105 will-change-transform" />
         : <div className="absolute inset-0 bg-gray-100" />}
 
       <div className="absolute top-0 left-0 bg-primary-700 px-5 py-2.5 z-10">
@@ -198,9 +198,9 @@ function TestemunhosSlider() {
 }
 
 /* ── Banner section (Olivais-style: full-width image + white box + red bar) ── */
-function Banner({ imageSrc, title, subtitle, href, objectFit = 'object-cover object-top' }) {
+function Banner({ imageSrc, title, subtitle, href, objectFit = 'object-contain' }) {
   return (
-    <Link to={href} className="relative block group overflow-hidden bg-white border border-gray-100 h-[350px] sm:h-[450px] md:h-[550px] lg:h-[700px]">
+    <Link to={href} className="relative block group overflow-hidden bg-gray-100 border border-gray-100 h-[350px] sm:h-[450px] md:h-[550px] lg:h-[700px]">
       <img src={imageSrc} alt={title} loading="lazy" decoding="async"
         className={`absolute inset-0 w-full h-full ${objectFit} transition-transform duration-700 group-hover:scale-105 will-change-transform`} />
 
@@ -225,9 +225,9 @@ function Banner({ imageSrc, title, subtitle, href, objectFit = 'object-cover obj
 /* ── Half-card (Reitor / Um Dia) ───────────────────────────────────────────── */
 function HalfCard({ imageSrc, label, href }) {
   return (
-    <Link to={href} className="relative block group overflow-hidden bg-white border border-gray-100 h-[260px] sm:h-[300px] md:h-[340px]">
+    <Link to={href} className="relative block group overflow-hidden bg-gray-100 border border-gray-100 h-[260px] sm:h-[300px] md:h-[340px]">
       <img src={imageSrc} alt={label} loading="lazy" decoding="async"
-        className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105 will-change-transform" />
+        className="absolute inset-0 w-full h-full object-contain transition-transform duration-700 group-hover:scale-105 will-change-transform" />
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-3/4 sm:w-1/2 lg:w-2/5 xl:w-1/4 bg-primary-700/70 py-3 px-4 text-center backdrop-blur-sm">
         <span className="text-white font-bold text-xs sm:text-sm uppercase tracking-widest">{label}</span>
       </div>
