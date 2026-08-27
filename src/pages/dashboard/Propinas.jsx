@@ -105,7 +105,7 @@ export default function Propinas() {
               ['Propina Mensal', formatCurrency(divida.montante_mensal, divida.moeda)],
               ['Após Desconto', formatCurrency(divida.montante_efectivo, divida.moeda)],
               ['Saldo Devedor', formatCurrency(divida.saldo_devedor, divida.moeda)],
-              ['Vencimento', formatDate(divida.data_vencimento)],
+              ['Data Limite', formatDate(divida.data_vencimento)],
               ['Bolsa', divida.bolsa ? 'Sim' : 'Não'],
               ['Desconto', `${divida.desconto_percentagem}%`],
             ].map(([l, v]) => (

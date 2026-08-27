@@ -64,7 +64,7 @@ export default function DashboardHome() {
             {[
               ['Propina Mensal', formatCurrency(divida.montante_efectivo, divida.moeda)],
               ['Saldo Devedor', formatCurrency(divida.saldo_devedor, divida.moeda)],
-              ['Vencimento', formatDate(divida.data_vencimento)],
+              ['Data Limite', formatDate(divida.data_vencimento)],
               ['Bolsa', divida.bolsa ? `${divida.desconto_percentagem}% desconto` : 'Não'],
             ].map(([l, v]) => (
               <div key={l} className="text-center p-3 bg-gray-50 rounded-lg">

@@ -56,7 +56,7 @@ export default function AdminDefinicoes() {
               </select>
             </div>
           </div>
-          <div><label className="label">Data de Vencimento</label><input type="date" value={form.data_vencimento} onChange={set('data_vencimento')} className="input" /></div>
+          <div><label className="label">Data Limite de Pagamento</label><input type="date" value={form.data_vencimento} onChange={set('data_vencimento')} className="input" /></div>
           <button type="submit" disabled={loading} className="btn-primary">{loading ? 'A guardar...' : 'Configurar Propina'}</button>
         </form>
       </div>
