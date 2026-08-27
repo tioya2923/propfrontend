@@ -89,7 +89,6 @@ export default function Contactos() {
             <div className="lg:col-span-2">
               {sent ? (
                 <div className="card text-center py-16">
-                  <div className="text-5xl mb-4">✉️</div>
                   <h3 className="text-xl font-semibold mb-2">Mensagem enviada!</h3>
                   <p className="text-gray-600">Responderemos em breve. Obrigado pelo contacto.</p>
                 </div>

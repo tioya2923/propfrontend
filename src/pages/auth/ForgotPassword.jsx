@@ -29,7 +29,6 @@ export default function ForgotPassword() {
 
         {sent ? (
           <div className="card text-center">
-            <div className="text-4xl mb-4">✉️</div>
             <p className="text-gray-700 mb-4">Se o email existir na nossa base de dados, receberá instruções em breve.</p>
             <Link to="/login" className="btn-primary">Voltar ao Login</Link>
           </div>

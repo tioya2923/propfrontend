@@ -572,7 +572,6 @@ export default function AdminConteudo() {
               <ListaObjEditor
                 items={Array.isArray(data.infraestruturas) ? data.infraestruturas : []}
                 campos={[
-                  { key: 'emoji', label: 'Ícone (emoji)', placeholder: '📚' },
                   { key: 'nome', label: 'Nome', placeholder: 'Biblioteca' },
                   { key: 'desc', label: 'Descrição', placeholder: '5.000+ volumes' },
                 ]}
@@ -754,7 +753,6 @@ export default function AdminConteudo() {
               <ListaObjEditor
                 items={Array.isArray(data.atividades) ? data.atividades : []}
                 campos={[
-                  { key: 'emoji', label: 'Ícone (emoji)', placeholder: '⚽' },
                   { key: 'nome', label: 'Nome da actividade', placeholder: 'Desporto' },
                   { key: 'desc', label: 'Descrição', multiline: true },
                 ]}

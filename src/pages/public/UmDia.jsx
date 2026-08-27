@@ -2,14 +2,14 @@ import { useConteudo } from '../../hooks/useConteudo';
 
 const DEFAULTS_SEMINARIO = {
   infraestruturas: [
-    { emoji: '📚', nome: 'Biblioteca', desc: '5.000+ volumes' },
-    { emoji: '⛪', nome: 'Capela', desc: 'Celebrações comuns' },
-    { emoji: '🍽️', nome: 'Refeitório', desc: 'Refeições diárias' },
-    { emoji: '⚽', nome: 'Desporto', desc: 'Campo e ginásio' },
-    { emoji: '🏥', nome: 'Enfermaria', desc: 'Cuidados básicos' },
-    { emoji: '💻', nome: 'Laboratório', desc: 'Informática e internet' },
-    { emoji: '🌿', nome: 'Jardins', desc: 'Espaços de oração' },
-    { emoji: '🏫', nome: 'Salas de Aula', desc: 'Separadas por Secção' },
+    { nome: 'Biblioteca', desc: '5.000+ volumes' },
+    { nome: 'Capela', desc: 'Celebrações comuns' },
+    { nome: 'Refeitório', desc: 'Refeições diárias' },
+    { nome: 'Desporto', desc: 'Campo e ginásio' },
+    { nome: 'Enfermaria', desc: 'Cuidados básicos' },
+    { nome: 'Laboratório', desc: 'Informática e internet' },
+    { nome: 'Jardins', desc: 'Espaços de oração' },
+    { nome: 'Salas de Aula', desc: 'Separadas por Secção' },
   ],
 };
 
@@ -107,7 +107,6 @@ export default function UmDia() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {atividades.map((a, i) => (
                 <div key={i} className="card text-center">
-                  {a.emoji && <div className="text-4xl mb-4">{a.emoji}</div>}
                   <h3 className="font-semibold text-gray-900 mb-2">{a.nome}</h3>
                   {a.desc && <p className="text-sm text-gray-600 leading-relaxed">{a.desc}</p>}
                 </div>
@@ -171,7 +170,6 @@ export default function UmDia() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {infraestruturas.map((inf, i) => (
               <div key={i} className="card text-center hover:shadow-md transition-shadow">
-                <div className="text-4xl mb-3">{inf.emoji}</div>
                 <h3 className="font-semibold text-gray-900 mb-1">{inf.nome}</h3>
                 <p className="text-xs text-gray-500">{inf.desc}</p>
               </div>

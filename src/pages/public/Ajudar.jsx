@@ -14,9 +14,9 @@ const DEFAULTS = {
 };
 
 const METODOS = [
-  { id: 'mcx',   label: 'MCX Express', icon: '📲', moeda: 'AOA', hint: 'Angola' },
-  { id: 'mbway', label: 'MBWay',       icon: '📱', moeda: 'EUR', hint: 'Portugal' },
-  { id: 'visa',  label: 'Cartão Visa', icon: '💳', moeda: 'EUR', hint: 'Internacional' },
+  { id: 'mcx',   label: 'MCX Express', moeda: 'AOA', hint: 'Angola' },
+  { id: 'mbway', label: 'MBWay',       moeda: 'EUR', hint: 'Portugal' },
+  { id: 'visa',  label: 'Cartão Visa', moeda: 'EUR', hint: 'Internacional' },
 ];
 
 const VALORES_AOA = [5000, 10000, 25000, 50000];
@@ -83,7 +83,6 @@ function DonatePage() {
   /* ── Ecrã de sucesso ── */
   if (sucesso?.referencia) return (
     <div id="donativo" className="card max-w-md mx-auto text-center py-8">
-      <div className="text-5xl mb-4">✅</div>
       <h3 className="text-xl font-semibold mb-2 text-gray-900">Pedido registado!</h3>
       <p className="text-gray-600 mb-4">Use a referência abaixo para concluir o pagamento via MCX Express:</p>
       <div className="bg-gray-100 rounded-xl py-4 px-6 text-3xl font-mono font-bold text-primary-700 tracking-widest mb-4">
@@ -101,7 +100,6 @@ function DonatePage() {
 
   if (sucesso?.cartao) return (
     <div id="donativo" className="card max-w-md mx-auto text-center py-8">
-      <div className="text-5xl mb-4">🙏</div>
       <h3 className="text-xl font-semibold mb-2 text-gray-900">Obrigado pela sua generosidade!</h3>
       <p className="text-gray-600 mb-6">O seu donativo de <strong>{sucesso.valorPago}</strong> foi processado com sucesso.</p>
       <button onClick={() => setSucesso(null)} className="btn-secondary text-sm">Fazer outro donativo</button>
@@ -110,7 +108,6 @@ function DonatePage() {
 
   if (sucesso?.manual) return (
     <div id="donativo" className="card max-w-md mx-auto text-center py-8">
-      <div className="text-5xl mb-4">📱</div>
       <h3 className="text-xl font-semibold mb-3 text-gray-900">Pedido recebido!</h3>
       <p className="text-gray-600 mb-4">
         Envie o valor para o número MBWay do Seminário e indique o seu nome na descrição:
@@ -133,7 +130,6 @@ function DonatePage() {
         {METODOS.map(mt => (
           <button key={mt.id} type="button" onClick={() => { setMetodo(mt.id); setValor(''); }}
             className={`flex-1 flex flex-col items-center py-2.5 px-1 rounded-xl border text-xs font-semibold transition-colors ${metodo === mt.id ? 'bg-primary-700 text-white border-primary-700' : 'border-gray-200 text-gray-600 hover:border-primary-300'}`}>
-            <span className="text-xl mb-0.5">{mt.icon}</span>
             {mt.label}
             <span className={`text-[10px] font-normal mt-0.5 ${metodo === mt.id ? 'text-primary-200' : 'text-gray-400'}`}>{mt.hint}</span>
           </button>
@@ -266,7 +262,6 @@ export default function Ajudar() {
 
       <section id="oracao" className="bg-primary-700 text-white py-28">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="text-5xl mb-6">🙏</div>
           <h2 className="text-3xl font-serif font-bold mb-4">Pedido de Oração</h2>
           <p className="text-primary-100 mb-8">{c.oracao_texto}</p>
           <a href={`mailto:${c.email_oracao}?subject=Pedido de Oração`} className="bg-white text-primary-700 hover:bg-white font-semibold py-3 px-8 rounded-lg inline-block transition-colors">
