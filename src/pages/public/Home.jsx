@@ -36,19 +36,16 @@ function SocialSidebar() {
   );
 }
 
-/* ── Hero Slider — mostra as notícias em destaque; se não houver nenhuma,
-   recorre ao título/imagens genéricos configurados pelo admin ───────────── */
-function HeroSlider({ noticias, subtituloFallback, tituloFallback, imagensFallback }) {
+/* ── Hero Slider — título/imagens genéricos configurados pelo admin.
+   As notícias já têm o seu próprio espaço na secção "Notícias + Testemunhos"
+   logo abaixo, por isso não voltam a passar aqui. ───────────────────────── */
+function HeroSlider({ subtituloFallback, tituloFallback, imagensFallback }) {
   const [slide, setSlide] = useState(0);
-  const temNoticias = noticias.length > 0;
-  const srcsFallback = imagensFallback.length ? imagensFallback : ['/images/hero.svg'];
-  const total = temNoticias ? noticias.length : srcsFallback.length;
+  const srcs = imagensFallback.length ? imagensFallback : ['/images/hero.svg'];
+  const total = srcs.length;
 
   const next = useCallback(() => setSlide(i => (i + 1) % total), [total]);
   const prev = useCallback(() => setSlide(i => (i === 0 ? total - 1 : i - 1)), [total]);
-
-  // Repõe o slide ao mudar de fonte (ex: as notícias acabaram de carregar).
-  useEffect(() => { setSlide(0); }, [temNoticias, total]);
 
   useEffect(() => {
     if (total <= 1) return;
@@ -56,62 +53,30 @@ function HeroSlider({ noticias, subtituloFallback, tituloFallback, imagensFallba
     return () => clearInterval(t);
   }, [next, total]);
 
-  const n = temNoticias ? noticias[slide] : null;
-  const href = n ? `/noticias/${n.slug || n.id}` : null;
-
   return (
     <section className="relative group bg-gray-900 overflow-hidden h-[55vw] min-h-[320px] md:h-[70vh] md:min-h-[480px]">
-      {temNoticias
-        ? noticias.map((item, i) => (
-            <img
-              key={item.id}
-              src={item.imagem_url || '/images/hero.svg'}
-              alt=""
-              fetchpriority={i === 0 ? 'high' : 'low'}
-              decoding="async"
-              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${i === slide ? 'opacity-100' : 'opacity-0'}`}
-            />
-          ))
-        : srcsFallback.map((src, i) => (
-            <img
-              key={src}
-              src={src}
-              alt=""
-              fetchpriority={i === 0 ? 'high' : 'low'}
-              decoding="async"
-              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${i === slide ? 'opacity-100' : 'opacity-0'}`}
-            />
-          ))}
+      {srcs.map((src, i) => (
+        <img
+          key={src}
+          src={src}
+          alt=""
+          fetchpriority={i === 0 ? 'high' : 'low'}
+          decoding="async"
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${i === slide ? 'opacity-100' : 'opacity-0'}`}
+        />
+      ))}
       <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/35 to-black/10" />
 
       {/* text */}
       <div className="relative h-full flex flex-col justify-center px-6 sm:px-10 md:px-20 lg:px-28 max-w-3xl">
-        {temNoticias ? (
-          <Link to={href} className="group/link">
-            <p className="text-white/75 uppercase tracking-[0.2em] mb-2 text-xs sm:text-sm md:text-base font-light">
-              Notícias
-            </p>
-            <h1 className="text-white font-serif font-bold leading-tight group-hover/link:underline decoration-2 underline-offset-4"
-              style={{ fontSize: 'clamp(1.5rem, 5vw, 4.5rem)' }}>
-              {n.titulo}
-            </h1>
-            {n.resumo && (
-              <p className="text-white/80 mt-3 text-sm sm:text-base max-w-xl leading-relaxed line-clamp-2">{n.resumo}</p>
-            )}
-            <div className="mt-4 w-12 h-1 bg-primary-500" />
-          </Link>
-        ) : (
-          <>
-            <p className="text-white/75 uppercase tracking-[0.2em] mb-2 text-xs sm:text-sm md:text-base font-light">
-              {subtituloFallback}
-            </p>
-            <h1 className="text-white font-serif font-bold leading-tight"
-              style={{ fontSize: 'clamp(1.75rem, 6vw, 5.5rem)' }}>
-              {tituloFallback}
-            </h1>
-            <div className="mt-4 w-12 h-1 bg-primary-500" />
-          </>
-        )}
+        <p className="text-white/75 uppercase tracking-[0.2em] mb-2 text-xs sm:text-sm md:text-base font-light">
+          {subtituloFallback}
+        </p>
+        <h1 className="text-white font-serif font-bold leading-tight"
+          style={{ fontSize: 'clamp(1.75rem, 6vw, 5.5rem)' }}>
+          {tituloFallback}
+        </h1>
+        <div className="mt-4 w-12 h-1 bg-primary-500" />
       </div>
 
       {/* arrows */}
@@ -288,9 +253,8 @@ export default function Home() {
     <div>
       <SocialSidebar />
 
-      {/* ── 1. Hero — notícias em destaque, com o título/imagem do admin como recurso ── */}
+      {/* ── 1. Hero — título/imagem genéricos configurados pelo admin ──────── */}
       <HeroSlider
-        noticias={noticias}
         subtituloFallback={heroSubtitulo}
         tituloFallback={heroTitulo}
         imagensFallback={heroImagens}
