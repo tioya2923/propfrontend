@@ -29,7 +29,8 @@ function ImageUpload({ value, onChange }) {
       <label className="label">Fotografia (opcional)</label>
       {value && (
         <div className="relative mb-2 inline-block">
-          <img src={value} alt="preview" className="h-32 rounded-lg object-cover border border-gray-200" />
+          <img src={value} alt="preview" className="h-32 rounded-lg object-cover border border-gray-200"
+            onError={e => { e.target.style.display = 'none'; }} />
           <button type="button" onClick={() => onChange('')}
             className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
             <X size={10} />
