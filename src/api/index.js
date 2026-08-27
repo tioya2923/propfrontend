@@ -16,6 +16,7 @@ export const semináristaAPI = {
   getHorarios: () => api.get('/seminarista/horarios'),
   getMateriais: () => api.get('/seminarista/materiais'),
   getComunicados: () => api.get('/seminarista/comunicados'),
+  getNotas: () => api.get('/seminarista/notas'),
   getForumPosts: (params) => api.get('/seminarista/forum', { params }),
   createForumPost: (data) => api.post('/seminarista/forum', data),
 };

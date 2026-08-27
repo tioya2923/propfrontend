@@ -1,5 +1,5 @@
 import { NavLink, Outlet, Link } from 'react-router-dom';
-import { Home, CreditCard, Clock, BookOpen, Bell, MessageSquare, User, LogOut, X, Menu } from 'lucide-react';
+import { Home, CreditCard, Clock, BookOpen, Bell, MessageSquare, User, LogOut, X, Menu, GraduationCap } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -7,6 +7,7 @@ const navItems = [
   { label: 'Início', href: '/dashboard', icon: Home, exact: true },
   { label: 'Propinas', href: '/dashboard/propinas', icon: CreditCard },
   { label: 'Horários', href: '/dashboard/horarios', icon: Clock },
+  { label: 'Notas', href: '/dashboard/notas', icon: GraduationCap },
   { label: 'Materiais', href: '/dashboard/materiais', icon: BookOpen },
   { label: 'Comunicados', href: '/dashboard/comunicados', icon: Bell },
   { label: 'Fórum', href: '/dashboard/forum', icon: MessageSquare },

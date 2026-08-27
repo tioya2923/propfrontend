@@ -32,6 +32,7 @@ import ForgotPassword from './pages/auth/ForgotPassword';
 import DashboardHome from './pages/dashboard/DashboardHome';
 import Propinas from './pages/dashboard/Propinas';
 import Horarios from './pages/dashboard/Horarios';
+import Notas from './pages/dashboard/Notas';
 import Materiais from './pages/dashboard/Materiais';
 import Comunicados from './pages/dashboard/Comunicados';
 import Forum from './pages/dashboard/Forum';
@@ -100,6 +101,7 @@ export default function App() {
           <Route index element={<DashboardHome />} />
           <Route path="propinas" element={<Propinas />} />
           <Route path="horarios" element={<Horarios />} />
+          <Route path="notas" element={<Notas />} />
           <Route path="materiais" element={<Materiais />} />
           <Route path="comunicados" element={<Comunicados />} />
           <Route path="forum" element={<Forum />} />
