@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { useApi } from '../../hooks/useApi';
 import { adminAPI } from '../../api';
 import { useAuth } from '../../context/AuthContext';
+import { useConfirm } from '../../context/ConfirmContext';
 import { formatCurrency, formatDateTime, PAGAMENTO_METODO_LABEL } from '../../utils/format';
 import { CheckCircle2, XCircle, Clock } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function AdminPagamentos() {
   const { isAdmin } = useAuth();
+  const confirm = useConfirm();
   const [tab, setTab] = useState('pendentes'); // 'pendentes' | 'confirmados'
   const [page, setPage] = useState(1);
   const [busyId, setBusyId] = useState(null);
@@ -29,7 +31,7 @@ export default function AdminPagamentos() {
   }
 
   async function handleRejeitar(id) {
-    if (!confirm('Rejeitar e eliminar este pedido de pagamento? Esta acção não pode ser desfeita.')) return;
+    if (!(await confirm('Rejeitar e eliminar este pedido de pagamento? Esta acção não pode ser desfeita.'))) return;
     setBusyId(id);
     try {
       await adminAPI.rejeitarPagamentoAdmin(id);

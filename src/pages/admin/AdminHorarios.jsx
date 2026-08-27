@@ -2,12 +2,14 @@ import { useState, useEffect, useCallback } from 'react';
 import { adminAPI } from '../../api';
 import { Plus, Edit2, Trash2, X, Clock } from 'lucide-react';
 import { DIAS_SEMANA, ANOS_FORMACAO } from '../../utils/format';
+import { useConfirm } from '../../context/ConfirmContext';
 import toast from 'react-hot-toast';
 
 const DIA_ORDER = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado'];
 const EMPTY = { ano_formacao: 1, dia_semana: 'segunda', hora_inicio: '', hora_fim: '', disciplina: '', professor: '', professor_id: '', sala: '' };
 
 export default function AdminHorarios() {
+  const confirm = useConfirm();
   const [horarios, setHorarios] = useState([]);
   const [professores, setProfessores] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -72,7 +74,7 @@ export default function AdminHorarios() {
   }
 
   async function handleDelete(id) {
-    if (!confirm('Eliminar este horário?')) return;
+    if (!(await confirm('Eliminar este horário?'))) return;
     try {
       await adminAPI.deleteHorario(id);
       toast.success('Horário eliminado');

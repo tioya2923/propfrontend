@@ -3,6 +3,7 @@ import { adminAPI } from '../../api';
 import { useApi } from '../../hooks/useApi';
 import { Plus, Edit2, Trash2, Eye, EyeOff, X, ImagePlus } from 'lucide-react';
 import { formatDate, resolveAssetUrl } from '../../utils/format';
+import { useConfirm } from '../../context/ConfirmContext';
 import toast from 'react-hot-toast';
 
 const CATEGORIAS = ['geral', 'eventos', 'academico', 'formacao', 'comunidade', 'vocacao'];
@@ -54,6 +55,7 @@ function ImageUpload({ value, onChange }) {
 }
 
 export default function AdminNoticias() {
+  const confirm = useConfirm();
   const [page, setPage] = useState(1);
   const [filtro, setFiltro] = useState('');
   const [modal, setModal] = useState(null);
@@ -100,7 +102,7 @@ export default function AdminNoticias() {
   }
 
   async function handleDelete(id) {
-    if (!confirm('Eliminar esta notícia? Esta acção é irreversível.')) return;
+    if (!(await confirm('Eliminar esta notícia? Esta acção é irreversível.'))) return;
     try { await adminAPI.deleteNoticia(id); toast.success('Notícia eliminada'); reload(); }
     catch { toast.error('Erro ao eliminar'); }
   }

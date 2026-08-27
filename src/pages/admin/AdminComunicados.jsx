@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { adminAPI } from '../../api';
 import { Send, Trash2, Bell } from 'lucide-react';
 import { formatDateTime } from '../../utils/format';
+import { useConfirm } from '../../context/ConfirmContext';
 import toast from 'react-hot-toast';
 
 const DESTINATARIOS_LABEL = {
@@ -9,6 +10,7 @@ const DESTINATARIOS_LABEL = {
 };
 
 export default function AdminComunicados() {
+  const confirm = useConfirm();
   const [form, setForm] = useState({ titulo: '', conteudo: '', destinatarios: 'todos' });
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(null);
@@ -43,7 +45,7 @@ export default function AdminComunicados() {
   }
 
   async function handleDelete(id) {
-    if (!confirm('Eliminar este comunicado? Já foi enviado por email — isto só o remove do site.')) return;
+    if (!(await confirm('Eliminar este comunicado? Já foi enviado por email — isto só o remove do site.'))) return;
     try {
       await adminAPI.deleteComunicado(id);
       toast.success('Comunicado eliminado');

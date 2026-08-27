@@ -3,6 +3,7 @@ import { adminAPI } from '../../api';
 import { useApi } from '../../hooks/useApi';
 import { formatDateTime } from '../../utils/format';
 import { MessageSquare, Pin, PinOff, Trash2 } from 'lucide-react';
+import { useConfirm } from '../../context/ConfirmContext';
 import toast from 'react-hot-toast';
 
 const CATEGORIAS = ['todas', 'geral', 'liturgia', 'estudo', 'lazer', 'avisos', 'academico'];
@@ -49,6 +50,7 @@ function PostCard({ post, isReply, onTogglePin, onDelete }) {
 }
 
 export default function AdminForum() {
+  const confirm = useConfirm();
   const [page, setPage] = useState(1);
   const [categoria, setCategoria] = useState('todas');
   const { data, loading, reload } = useApi(
@@ -72,7 +74,7 @@ export default function AdminForum() {
     const aviso = post.respostas?.length
       ? `Eliminar esta publicação e as suas ${post.respostas.length} resposta(s)?`
       : 'Eliminar esta publicação?';
-    if (!confirm(aviso)) return;
+    if (!(await confirm(aviso))) return;
     try {
       await adminAPI.deleteForumPost(post.id);
       toast.success('Publicação eliminada');

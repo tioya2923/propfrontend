@@ -2,11 +2,13 @@ import { useEffect, useState, useRef } from 'react';
 import { Upload, Trash2, FileDown } from 'lucide-react';
 import { professorAPI } from '../../api';
 import { MATERIAL_TIPO_LABEL, resolveAssetUrl } from '../../utils/format';
+import { useConfirm } from '../../context/ConfirmContext';
 import toast from 'react-hot-toast';
 
 const TIPOS = ['outro', 'apostila', 'exercicio', 'leitura', 'apresentacao'];
 
 export default function ProfessorMateriais() {
+  const confirm = useConfirm();
   const [materiais, setMateriais] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -42,7 +44,7 @@ export default function ProfessorMateriais() {
   }
 
   async function apagar(id) {
-    if (!confirm('Eliminar este material?')) return;
+    if (!(await confirm('Eliminar este material?'))) return;
     try {
       await professorAPI.deleteMaterial(id);
       setMateriais(prev => prev.filter(m => m.id !== id));

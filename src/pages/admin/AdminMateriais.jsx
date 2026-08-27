@@ -2,11 +2,13 @@ import { useState, useEffect, useCallback } from 'react';
 import { adminAPI } from '../../api';
 import { Upload, Trash2, FileDown, FileText, BookOpen, Presentation } from 'lucide-react';
 import { formatDate, MATERIAL_TIPO_LABEL, resolveAssetUrl } from '../../utils/format';
+import { useConfirm } from '../../context/ConfirmContext';
 import toast from 'react-hot-toast';
 
 const ICON = { documento: FileText, livro: BookOpen, apresentacao: Presentation };
 
 export default function AdminMateriais() {
+  const confirm = useConfirm();
   const [form, setForm] = useState({ titulo: '', descricao: '', tipo: 'documento', ano_formacao: '' });
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -46,7 +48,7 @@ export default function AdminMateriais() {
   }
 
   async function handleDelete(id) {
-    if (!confirm('Eliminar este material?')) return;
+    if (!(await confirm('Eliminar este material?'))) return;
     try {
       await adminAPI.deleteMaterialAdmin(id);
       toast.success('Material eliminado');

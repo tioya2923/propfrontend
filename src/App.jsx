@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
+import { ConfirmProvider } from './context/ConfirmContext';
 import { ProtectedRoute } from './components/ui/ProtectedRoute';
 import ScrollToTop from './components/ui/ScrollToTop';
 import InstallPrompt from './components/ui/InstallPrompt';
@@ -69,6 +70,7 @@ function Loading() {
 export default function App() {
   return (
     <AuthProvider>
+    <ConfirmProvider>
       <Toaster position="top-right" toastOptions={{ duration: 4000, style: { fontSize: '14px' } }} />
       <ScrollToTop />
       <InstallPrompt />
@@ -135,6 +137,7 @@ export default function App() {
 
         <Route path="*" element={<div className="min-h-screen flex flex-col items-center justify-center gap-4"><h1 className="text-4xl font-bold text-gray-900">404</h1><p className="text-gray-500">Página não encontrada</p><a href="/" className="btn-primary">Ir para o início</a></div>} />
       </Routes>
+    </ConfirmProvider>
     </AuthProvider>
   );
 }

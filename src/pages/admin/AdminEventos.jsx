@@ -3,6 +3,7 @@ import { adminAPI } from '../../api';
 import { useApi } from '../../hooks/useApi';
 import { Plus, Edit2, Trash2, X, ImagePlus } from 'lucide-react';
 import { formatDate, resolveAssetUrl } from '../../utils/format';
+import { useConfirm } from '../../context/ConfirmContext';
 import toast from 'react-hot-toast';
 
 const TIPOS = ['liturgico', 'academico', 'formacao', 'comunitario', 'outro'];
@@ -50,6 +51,7 @@ function ImageUpload({ value, onChange }) {
 }
 
 export default function AdminEventos() {
+  const confirm = useConfirm();
   const [page, setPage] = useState(1);
   const [modal, setModal] = useState(null);
   const [form, setForm] = useState(EMPTY);
@@ -86,7 +88,7 @@ export default function AdminEventos() {
   }
 
   async function handleDelete(id) {
-    if (!confirm('Eliminar este evento?')) return;
+    if (!(await confirm('Eliminar este evento?'))) return;
     try { await adminAPI.deleteEvento(id); toast.success('Evento eliminado'); reload(); }
     catch { toast.error('Erro ao eliminar'); }
   }

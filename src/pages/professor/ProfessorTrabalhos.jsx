@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { FileText, Plus, Trash2, ChevronDown, ChevronUp, Check, X } from 'lucide-react';
 import { professorAPI } from '../../api';
+import { useConfirm } from '../../context/ConfirmContext';
 import toast from 'react-hot-toast';
 
 const EMPTY = { titulo: '', descricao: '', data_entrega: '', ano_formacao: '', materia: '', publicado: false };
 
 export default function ProfessorTrabalhos() {
+  const confirm = useConfirm();
   const [trabalhos, setTrabalhos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -48,7 +50,7 @@ export default function ProfessorTrabalhos() {
   }
 
   async function apagar(id) {
-    if (!confirm('Eliminar este trabalho?')) return;
+    if (!(await confirm('Eliminar este trabalho?'))) return;
     try { await professorAPI.deleteTrabalho(id); setTrabalhos(prev => prev.filter(t => t.id !== id)); toast.success('Eliminado'); }
     catch { toast.error('Erro ao eliminar'); }
   }

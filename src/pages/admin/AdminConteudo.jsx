@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { adminAPI } from '../../api';
 import { useAuth } from '../../context/AuthContext';
+import { useConfirm } from '../../context/ConfirmContext';
 import toast from 'react-hot-toast';
 import { Save, Plus, Trash2, ChevronDown, ChevronUp, Upload, X, Lock, Edit2, Check } from 'lucide-react';
 import { resolveAssetUrl } from '../../utils/format';
@@ -200,6 +201,7 @@ function CurriculoEditor({ label, items, onChange }) {
 const EMPTY_MEMBRO = { nome: '', cargo: '', area: '', ordem: 0, ativo: true };
 
 function SecçãoEquipa() {
+  const confirm = useConfirm();
   const [membros, setMembros] = useState([]);
   const [editId, setEditId] = useState(null); // null = a criar; string = a editar esse id
   const [form, setForm] = useState({ ...EMPTY_MEMBRO });
@@ -244,7 +246,7 @@ function SecçãoEquipa() {
   }
 
   async function handleDelete(id) {
-    if (!confirm('Eliminar membro?')) return;
+    if (!(await confirm('Eliminar membro?'))) return;
     try {
       await adminAPI.deleteMembro(id);
       toast.success('Eliminado');

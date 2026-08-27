@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Users, ChevronDown, ChevronUp, Plus, Trash2, Check } from 'lucide-react';
 import { professorAPI } from '../../api';
+import { useConfirm } from '../../context/ConfirmContext';
 import toast from 'react-hot-toast';
 
 const PERIODOS = ['1º Semestre', '2º Semestre', 'Anual'];
 
 export default function ProfessorAlunos() {
+  const confirm = useConfirm();
   const [alunos, setAlunos] = useState([]);
   const [notas, setNotas] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -44,7 +46,7 @@ export default function ProfessorAlunos() {
   }
 
   async function apagar(id) {
-    if (!confirm('Eliminar esta nota?')) return;
+    if (!(await confirm('Eliminar esta nota?'))) return;
     try {
       await professorAPI.deleteNota(id);
       setNotas(prev => prev.filter(n => n.id !== id));
